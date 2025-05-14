@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 export default function Signin() {
   return (
@@ -7,7 +7,7 @@ export default function Signin() {
       <input placeholder="username" className="wd-username" /> <br />
       <input placeholder="password" type="password" className="wd-password" /> <br />
 
-      {/* Clicking "Sign in" navigates to the Dashboard */}
+      {/* Clicking "Sign in" -> Dashboard */}
       <Link to="/Kambaz/Dashboard" id="wd-signin-btn">
         Sign in
       </Link>
@@ -17,5 +17,5 @@ export default function Signin() {
         Sign up
       </Link>
     </div>
-  )
+  );
 }

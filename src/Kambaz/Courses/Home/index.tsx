@@ -1,5 +1,5 @@
-import Modules from '../Modules'
-import CourseStatus from './Status'
+import Modules from "../Modules";
+import CourseStatus from "./Status";
 
 export default function Home() {
   return (
@@ -15,5 +15,5 @@ export default function Home() {
         </tr>
       </tbody>
     </table>
-  )
+  );
 }

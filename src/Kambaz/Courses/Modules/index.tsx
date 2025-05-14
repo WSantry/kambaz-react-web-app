@@ -4,6 +4,11 @@ export default function Modules() {
       <h2>Modules</h2>
       <button>Collapse All</button>
       <button>View Progress</button>
+      <select>
+        <option value="Publish All">Publish All</option>
+        <option value="---">---</option>
+      </select>
+      <button>+Module</button>
       <ul id="wd-modules">
         <li className="wd-module">
           <div className="wd-title">Week 1</div>
@@ -44,5 +49,5 @@ export default function Modules() {
         </li>
       </ul>
     </div>
-  )
+  );
 }

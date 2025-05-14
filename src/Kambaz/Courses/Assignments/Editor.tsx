@@ -1,7 +1,6 @@
 export default function AssignmentEditor() {
   return (
     <div id="wd-assignments-editor">
-      <h2>Assignment Editor</h2>
 
       <label htmlFor="wd-name">Assignment Name</label>
       <br />
@@ -29,7 +28,7 @@ export default function AssignmentEditor() {
 
           <tr>
             <td align="right" valign="top">
-              <label htmlFor="wd-group">Group</label>
+              <label htmlFor="wd-group">Assignment Group</label>
             </td>
             <td>
               <select id="wd-group">
@@ -65,51 +64,58 @@ export default function AssignmentEditor() {
               </select>
             </td>
           </tr>
-
           <tr>
-            <td align="right" valign="top">
-              <label htmlFor="wd-website-url">Website URL</label>
+            <td>
             </td>
             <td>
-              <input id="wd-website-url" placeholder="http://..." />
+              Online Entry Options
             </td>
           </tr>
-
           <tr>
-            <td align="right" valign="top">
-              <label htmlFor="wd-file-upload">File Upload</label>
-            </td>
             <td>
-              <input id="wd-file-upload" type="checkbox" />
-            </td>
-          </tr>
-
-          <tr>
-            <td align="right" valign="top">
-              <label htmlFor="wd-text-entry">Text Entry</label>
             </td>
             <td>
               <input id="wd-text-entry" type="checkbox" />
+              <label htmlFor="wd-text-entry">Text Entry</label>
             </td>
           </tr>
 
           <tr>
-            <td align="right" valign="top">
-              <label htmlFor="wd-media-recordings">Media Recordings</label>
+            <td>
+            </td>
+            <td>
+              <input id="wd-website-url" type="checkbox" />
+              <label htmlFor="wd-website-url">Website URL</label>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
             </td>
             <td>
               <input id="wd-media-recordings" type="checkbox" />
+              <label htmlFor="wd-media-recordings">Media Recordings</label>
             </td>
           </tr>
 
           <tr>
-            <td align="right" valign="top">
-              <label htmlFor="wd-student-annotation">Student Annotation</label>
+            <td>
             </td>
             <td>
               <input id="wd-student-annotation" type="checkbox" />
+              <label htmlFor="wd-student-annotation">Student Annotation</label>
             </td>
           </tr>
+
+          <tr>
+            <td>
+            </td>
+            <td>
+              <input id="wd-file-upload" type="checkbox" />
+              <label htmlFor="wd-file-upload">File Uploads</label>
+            </td>
+          </tr>
+
 
           <tr>
             <td align="right" valign="top">
@@ -150,8 +156,23 @@ export default function AssignmentEditor() {
               <input id="wd-available-until" type="date" defaultValue="2025-12-31" />
             </td>
           </tr>
+          <tr>
+            <td>
+              <hr />
+            </td>
+            <td>
+              <hr />
+            </td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td  align="right" valign="top">
+              <button>Cancel</button><button>Save</button>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
-  )
+  );
 }

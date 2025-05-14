@@ -1,8 +1,6 @@
-// src/Labs/Lab1/index.tsx
-
 export default function Lab1() {
   return (
-    <div id="wd-lab1" style={{ padding: "1rem" }}>
+    <div id="wd-lab1">
       <h2>Lab 1 - HTML Exercises</h2>
 
       {/* HEADINGS */}
@@ -181,7 +179,6 @@ export default function Lab1() {
       {/* FORMS */}
       <div id="wd-forms">
         <h4>Form Elements</h4>
-
         <form id="wd-text-fields">
           <h5>Text Fields</h5>
           <label htmlFor="wd-text-fields-username">Username:</label>
@@ -268,9 +265,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           <select id="wd-select-one-genre">
             <option value="COMEDY">Comedy</option>
             <option value="DRAMA">Drama</option>
-            <option value="SCIFI" defaultValue="SCIFI">
-              Science Fiction
-            </option>
+            <option value="SCIFI">Science Fiction</option>
             <option value="FANTASY">Fantasy</option>
           </select>
           <br />
@@ -279,13 +274,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           <label htmlFor="wd-select-many-genre">Favorite movie genres:</label>
           <br />
           <select multiple id="wd-select-many-genre">
-            <option value="COMEDY" defaultChecked>
-              Comedy
-            </option>
+            <option value="COMEDY">Comedy</option>
             <option value="DRAMA">Drama</option>
-            <option value="SCIFI" defaultChecked>
-              Science Fiction
-            </option>
+            <option value="SCIFI">Science Fiction</option>
             <option value="FANTASY">Fantasy</option>
           </select>
           <br />
@@ -309,20 +300,11 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           <br />
 
           <label htmlFor="wd-text-fields-rating">Rating:</label>
-          <input
-            type="range"
-            defaultValue="4"
-            max="5"
-            id="wd-text-fields-rating"
-          />
+          <input type="range" defaultValue="4" max="5" id="wd-text-fields-rating" />
           <br />
 
           <label htmlFor="wd-text-fields-dob">Date of birth:</label>
-          <input
-            type="date"
-            defaultValue="2000-01-21"
-            id="wd-text-fields-dob"
-          />
+          <input type="date" defaultValue="2000-01-21" id="wd-text-fields-dob" />
           <br />
         </form>
       </div>
@@ -343,7 +325,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         <br />
         <a
           id="wd-github"
-          href="https://github.com/YOUR_GITHUB_ID/YOUR_REPO_NAME"
+          href="https://github.com/WSantry/kambaz-react-web-app.git"
           target="_blank"
           rel="noreferrer"
         >

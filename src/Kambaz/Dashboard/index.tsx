@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 export default function Dashboard() {
   return (
@@ -8,9 +8,9 @@ export default function Dashboard() {
       <h2 id="wd-dashboard-published">Published Courses (7)</h2>
       <hr />
 
-      <div id="wd-dashboard-courses" style={{ display: 'flex', flexWrap: 'wrap' }}>
-        {/* Example: 7 courses */}
-        <div className="wd-dashboard-course" style={{ margin: '10px' }}>
+      <div id="wd-dashboard-courses">
+        {/* 7 sample courses */}
+        <div className="wd-dashboard-course">
           <Link to="/Kambaz/Courses/1234/Home" className="wd-dashboard-course-link">
             <img src="/images/reactjs.jpg" width={200} alt="React" />
             <div>
@@ -21,7 +21,7 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        <div className="wd-dashboard-course" style={{ margin: '10px' }}>
+        <div className="wd-dashboard-course">
           <Link to="/Kambaz/Courses/2345/Home" className="wd-dashboard-course-link">
             <img src="/images/nodejs.png" width={200} alt="NodeJS" />
             <div>
@@ -32,7 +32,7 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        <div className="wd-dashboard-course" style={{ margin: '10px' }}>
+        <div className="wd-dashboard-course">
           <Link to="/Kambaz/Courses/3456/Home" className="wd-dashboard-course-link">
             <img src="/images/mongodb.png" width={200} alt="MongoDB" />
             <div>
@@ -43,9 +43,9 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        <div className="wd-dashboard-course" style={{ margin: '10px' }}>
+        <div className="wd-dashboard-course">
           <Link to="/Kambaz/Courses/4567/Home" className="wd-dashboard-course-link">
-            <img src="/images/express.jpg" width={200} alt="Express" />
+            <img src="/images/express.png" width={200} alt="Express" />
             <div>
               <h5>CS4567 Express</h5>
               <p className="wd-dashboard-course-title">RESTful APIs</p>
@@ -54,7 +54,7 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        <div className="wd-dashboard-course" style={{ margin: '10px' }}>
+        <div className="wd-dashboard-course">
           <Link to="/Kambaz/Courses/5678/Home" className="wd-dashboard-course-link">
             <img src="/images/typescript.png" width={200} alt="TypeScript" />
             <div>
@@ -65,18 +65,18 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        <div className="wd-dashboard-course" style={{ margin: '10px' }}>
+        <div className="wd-dashboard-course">
           <Link to="/Kambaz/Courses/6789/Home" className="wd-dashboard-course-link">
             <img src="/images/html.png" width={200} alt="HTML" />
             <div>
-              <h5>CS6789 HTML & CSS</h5>
+              <h5>CS6789 HTML &amp; CSS</h5>
               <p className="wd-dashboard-course-title">Front-end Web Dev</p>
               <button>Go</button>
             </div>
           </Link>
         </div>
 
-        <div className="wd-dashboard-course" style={{ margin: '10px' }}>
+        <div className="wd-dashboard-course">
           <Link to="/Kambaz/Courses/7890/Home" className="wd-dashboard-course-link">
             <img src="/images/python.png" width={200} alt="Python" />
             <div>
@@ -88,5 +88,5 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
-  )
+  );
 }

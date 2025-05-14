@@ -1,9 +1,9 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
-import CourseNavigation from './Navigation'
-import Home from './Home'
-import Modules from './Modules'
-import Assignments from './Assignments'
-import AssignmentEditor from './Assignments/Editor'
+import { Routes, Route, Navigate } from "react-router-dom";
+import CourseNavigation from "./Navigation";
+import Home from "./Home";
+import Modules from "./Modules";
+import Assignments from "./Assignments";
+import AssignmentEditor from "./Assignments/Editor";
 
 export default function Courses() {
   return (
@@ -13,12 +13,9 @@ export default function Courses() {
       <table>
         <tbody>
           <tr>
-            {/* Left column: Course nav */}
             <td valign="top">
               <CourseNavigation />
             </td>
-
-            {/* Right column: Different sub-screens */}
             <td valign="top">
               <Routes>
                 <Route path="/" element={<Navigate to="Home" />} />
@@ -37,5 +34,5 @@ export default function Courses() {
         </tbody>
       </table>
     </div>
-  )
+  );
 }

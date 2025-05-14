@@ -1,8 +1,8 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
-import Account from './Account'
-import Dashboard from './Dashboard'
-import KambazNavigation from './Navigation'
-import Courses from './Courses'
+import { Routes, Route, Navigate } from "react-router-dom";
+import Account from "./Account";
+import Dashboard from "./Dashboard";
+import KambazNavigation from "./Navigation";
+import Courses from "./Courses";
 
 export default function Kambaz() {
   return (
@@ -10,12 +10,9 @@ export default function Kambaz() {
       <table>
         <tbody>
           <tr>
-            {/* Left column: Kambaz sidebar navigation */}
             <td valign="top">
               <KambazNavigation />
             </td>
-
-            {/* Right column: Routes for different Kambaz screens */}
             <td valign="top">
               <Routes>
                 <Route path="/" element={<Navigate to="Account" />} />
@@ -30,5 +27,5 @@ export default function Kambaz() {
         </tbody>
       </table>
     </div>
-  )
+  );
 }

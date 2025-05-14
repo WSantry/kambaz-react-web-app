@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 export default function Profile() {
   return (
@@ -6,7 +6,12 @@ export default function Profile() {
       <h3>Profile</h3>
       <input defaultValue="alice" placeholder="username" className="wd-username" />
       <br />
-      <input defaultValue="123" placeholder="password" type="password" className="wd-password" />
+      <input
+        defaultValue="123"
+        placeholder="password"
+        type="password"
+        className="wd-password"
+      />
       <br />
       <input defaultValue="Alice" placeholder="First Name" id="wd-firstname" />
       <br />
@@ -27,5 +32,5 @@ export default function Profile() {
       {/* Sign out -> back to Signin */}
       <Link to="/Kambaz/Account/Signin">Sign out</Link>
     </div>
-  )
+  );
 }

@@ -8,5 +8,5 @@ export default function CourseStatus() {
       <button>View Course Analytics</button>
       <button>Student View</button>
     </div>
-  )
+  );
 }
