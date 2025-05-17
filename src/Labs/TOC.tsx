@@ -1,20 +1,37 @@
+import { Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 export default function TOC() {
   return (
-    <ul>
-      <li>
-        <Link to="/Labs">Labs (Landing)</Link>
-      </li>
-      <li>
-        <Link to="/Labs/Lab1">Lab 1</Link>
-      </li>
-      <li>
-        <Link to="/Labs/Lab2">Lab 2</Link>
-      </li>
-      <li>
-        <Link to="/Labs/Lab3">Lab 3</Link>
-      </li>
-    </ul>
+    <Nav variant="pills" className="mb-3">
+      <Nav.Item>
+        <Nav.Link as={Link} to="/Labs/Lab1">
+          Lab 1
+        </Nav.Link>
+      </Nav.Item>
+      <Nav.Item>
+        <Nav.Link as={Link} to="/Labs/Lab2">
+          Lab 2
+        </Nav.Link>
+      </Nav.Item>
+      <Nav.Item>
+        <Nav.Link as={Link} to="/Labs/Lab3">
+          Lab 3
+        </Nav.Link>
+      </Nav.Item>
+      <Nav.Item>
+        <Nav.Link as={Link} to="/Kambaz">
+          Kambaz
+        </Nav.Link>
+      </Nav.Item>
+      <Nav.Item>
+        <Nav.Link
+          href="https://github.com/WSantry/kambaz-react-web-app.git"
+          target="_blank"
+        >
+          GitHub Repo
+        </Nav.Link>
+      </Nav.Item>
+    </Nav>
   );
 }

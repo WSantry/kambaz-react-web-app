@@ -1,0 +1,15 @@
+/* universal resets. */
+body, html {
+  margin: 0;
+  padding: 0;
+}
+body * {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* On screens >= 768px, offset main content so it’s not overlapped by sidebar. */
+@media (min-width: 768px) {
+  #wd-kambaz .wd-main-content-offset {
+    padding-left: 140px !important;
+  }
+}
