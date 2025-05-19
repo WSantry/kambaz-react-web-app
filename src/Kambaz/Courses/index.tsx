@@ -13,7 +13,6 @@ export default function Courses() {
       <hr />
 
       <div className="d-flex">
-        {/* Hide on narrow screens if you want */}
         <div className="d-none d-md-block">
           <CourseNavigation />
         </div>

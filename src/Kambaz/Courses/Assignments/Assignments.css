@@ -1,4 +1,4 @@
-/* The border to the left of each item must be green. */
+/* The border to the left of each item green. */
 .wd-assignment-list-item {
   border-left: 4px solid green;
 }

@@ -4,12 +4,8 @@ import "./index.css";
 import { VscAccount } from "react-icons/vsc";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { FaBookBible, FaCalendar, FaEnvelopeOpenText, FaRegClock } from "react-icons/fa6";
-import { useState } from "react";
 
 export default function Lab2() {
-  // For switch demo
-  const [switch1, setSwitch1] = useState(false);
-  const [switch2, setSwitch2] = useState(true);
 
   return (
     <Container fluid="md" /* md = small horizontal margin, fluid="md" = responsive */>

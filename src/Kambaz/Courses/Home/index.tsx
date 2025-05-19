@@ -9,7 +9,7 @@ export default function Home() {
         <Modules />
       </div>
 
-      {/* right side: course status (hide on narrower if desired) */}
+      {/* right side: course status */}
       <div className="d-none d-xl-block">
         <CourseStatus />
       </div>
