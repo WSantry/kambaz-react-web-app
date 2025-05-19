@@ -181,15 +181,16 @@ export default function Lab2() {
 
       {/* 9. Dimensions */}
       <h3>Dimensions</h3>
-      <div className="wd-dimension-landscape wd-bg-color-yellow mb-3">
-        Yellow DIV longer than tall
-      </div>
-      <div className="wd-dimension-portrait wd-bg-color-blue wd-fg-color-white mb-3">
-        Blue DIV taller than wide 
-      </div>
-      <div className="wd-dimension-square wd-bg-color-red mb-3">
-        Red DIV same square
-      </div>
+      <div className="wd-dimension-portrait wd-bg-color-yellow">
+      Portrait
+    </div>
+    <div className="wd-dimension-landscape wd-bg-color-blue
+                    wd-fg-color-white">
+      Landscape
+    </div>
+    <div className="wd-dimension-square wd-bg-color-red">
+      Square</div>
+
 
       {/* 10. Position Relative */}
       <h3>Relative Position</h3>
@@ -223,13 +224,10 @@ export default function Lab2() {
       {/* 12. Fixed Position */}
       <h3>Fixed Position</h3>
       <p>
-        Scroll down the page... the blue square will remain fixed on the right side
+        Checkout the blue square that says "Fixed position" stuck all the way on the right and half way down the page. It doesn't scroll with the rest of the page. Its position is "Fixed".
       </p>
       <div className="wd-pos-fixed wd-bg-color-blue wd-fg-color-white wd-dimension-square">
         Fixed position
-      </div>
-      <div style={{ height: "400px", border: "1px solid black" }}>
-        Extra space to allow scrolling
       </div>
 
       {/* 13. Z-Index */}
@@ -239,7 +237,7 @@ export default function Lab2() {
           Portrait
         </div>
         <div className="wd-zindex-bring-to-front wd-pos-absolute-50-50 wd-dimension-landscape wd-bg-color-blue wd-fg-color-white">
-          Blue above others (z-index=10)
+          Landscape
         </div>
         <div className="wd-pos-absolute-120-20 wd-bg-color-red wd-dimension-square">
           Square
@@ -311,49 +309,55 @@ export default function Lab2() {
  </div>
 
       {/* 15. Grid Layout */}
-      <h3>Grid Layout (float-based)</h3>
+      <h3>Grid Layout</h3>
       <div className="wd-grid-row">
         <div className="wd-grid-col-half-page wd-bg-color-yellow text-center">
-          Left half
+          <h4>Left half</h4>
         </div>
         <div className="wd-grid-col-half-page wd-bg-color-blue wd-fg-color-white text-center">
-          Right half
+          <h4>Right half</h4>
         </div>
       </div>
       <div className="wd-grid-row">
         <div className="wd-grid-col-third-page wd-bg-color-green wd-fg-color-white text-center">
-          Left third
+          <h4>Left third</h4>
         </div>
         <div className="wd-grid-col-two-thirds-page wd-bg-color-red wd-fg-color-white text-center">
-          Right two-thirds
+          <h4>Right two-thirds</h4>
         </div>
       </div>
 
       <div className="wd-grid-row">
         <div className="wd-grid-col-left-sidebar wd-bg-color-yellow text-center">
-          Sidebar
+          <h4>Side bar</h4>
+      <p>This is the left sidebar</p>
         </div>
         <div className="wd-grid-col-main-content wd-bg-color-blue wd-fg-color-white text-center">
-          Main content
+         <h4>Main content</h4>
+      <p>
+        This is the main content. This is the main content. This is the
+        main content.
+      </p>
         </div>
         <div className="wd-grid-col-right-sidebar wd-bg-color-green wd-fg-color-white text-center">
-          Sidebar
+          <h4>Side bar</h4>
+      <p>This is the right sidebar</p>
         </div>
       </div>
 
       {/* 16. Flex */}
       <h3>Flex</h3>
       <div className="wd-flex-row-container mb-3">
-        <div className="wd-bg-color-yellow p-2">Column 1</div>
-        <div className="wd-bg-color-blue wd-fg-color-white p-2">Column 2</div>
-        <div className="wd-bg-color-red wd-fg-color-white p-2">Column 3</div>
+        <div className="wd-bg-color-yellow">Column 1</div>
+        <div className="wd-bg-color-blue">Column 2</div>
+        <div className="wd-bg-color-red">Column 3</div>
       </div>
 
       <div className="wd-flex-row-container mb-3">
-        <div className="wd-bg-color-yellow p-2 wd-width-75px">Column 1</div>
-        <div className="wd-bg-color-blue wd-fg-color-white p-2">Column 2</div>
-        <div className="wd-bg-color-red wd-fg-color-white p-2 wd-flex-grow-1">
-          Column 3 grows to fill
+        <div className="wd-bg-color-yellow wd-width-75px">Column 1</div>
+        <div className="wd-bg-color-blue">Column 2</div>
+        <div className="wd-bg-color-red wd-flex-grow-1">
+          Column 3
         </div>
       </div>
 

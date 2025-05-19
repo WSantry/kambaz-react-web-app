@@ -51,7 +51,7 @@ export default function Profile() {
   id="wd-signout-btn"
   className="btn btn-danger w-100 mb-2"
 >
-  Sign out
+  Signout
 </Link>
     </div>
   );

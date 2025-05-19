@@ -1,5 +1,5 @@
 import { ListGroup } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { LiaBookSolid, LiaCogSolid } from "react-icons/lia";
@@ -7,6 +7,8 @@ import { IoCalendarOutline } from "react-icons/io5";
 import { FaInbox } from "react-icons/fa";
 
 export default function KambazNavigation() {
+  const { pathname } = useLocation();
+
   return (
     <ListGroup
       id="wd-kambaz-navigation"
@@ -20,7 +22,7 @@ export default function KambazNavigation() {
         z-2
       "
     >
-      {/* Logo link to NEU */}
+      {/* NEU logo */}
       <ListGroup.Item
         id="wd-neu-link"
         action
@@ -32,37 +34,55 @@ export default function KambazNavigation() {
       </ListGroup.Item>
       <br />
 
-      {/* Account link -> black bg, white text */}
+      {/* Account */}
       <ListGroup.Item
         as={Link}
         to="/Kambaz/Account"
-        className="text-center border-0 bg-black text-white"
+        className={`text-center border-0 ${
+          pathname.startsWith("/Kambaz/Account") ? "bg-white text-danger" : "bg-black text-white"
+        }`}
       >
-        <FaRegCircleUser className="fs-1 text-white" />
+        <FaRegCircleUser
+          className={`fs-1 ${
+            pathname.startsWith("/Kambaz/Account") ? "text-danger" : "text-white"
+          }`}
+        />
         <br />
         Account
       </ListGroup.Item>
       <br />
 
-      {/* Dashboard link -> white bg, red text */}
+      {/* Dashboard */}
       <ListGroup.Item
         as={Link}
         to="/Kambaz/Dashboard"
-        className="text-center border-0 bg-white text-danger"
+        className={`text-center border-0 ${
+          pathname === "/Kambaz/Dashboard" ? "bg-white text-danger" : "bg-black text-white"
+        }`}
       >
-        <AiOutlineDashboard className="fs-1 text-danger" />
+        <AiOutlineDashboard
+          className={`fs-1 ${
+            pathname === "/Kambaz/Dashboard" ? "text-danger" : "text-danger"
+          }`}
+        />
         <br />
         Dashboard
       </ListGroup.Item>
       <br />
 
-      {/* Courses link -> black bg, white text, red icon */}
+      {/* Courses */}
       <ListGroup.Item
         as={Link}
         to="/Kambaz/Dashboard"
-        className="bg-black text-white text-center border-0"
+        className={`text-center border-0 ${
+          pathname.startsWith("/Kambaz/Courses") ? "bg-white text-danger" : "bg-black text-white"
+        }`}
       >
-        <LiaBookSolid className="fs-1 text-danger" />
+        <LiaBookSolid
+          className={`fs-1 ${
+            pathname.startsWith("/Kambaz/Courses") ? "text-danger" : "text-danger"
+          }`}
+        />
         <br />
         Courses
       </ListGroup.Item>
@@ -72,9 +92,15 @@ export default function KambazNavigation() {
       <ListGroup.Item
         as={Link}
         to="/Kambaz/Calendar"
-        className="bg-black text-white text-center border-0"
+        className={`text-center border-0 ${
+          pathname === "/Kambaz/Calendar" ? "bg-white text-danger" : "bg-black text-white"
+        }`}
       >
-        <IoCalendarOutline className="fs-1 text-danger" />
+        <IoCalendarOutline
+          className={`fs-1 ${
+            pathname === "/Kambaz/Calendar" ? "text-danger" : "text-danger"
+          }`}
+        />
         <br />
         Calendar
       </ListGroup.Item>
@@ -84,21 +110,33 @@ export default function KambazNavigation() {
       <ListGroup.Item
         as={Link}
         to="/Kambaz/Inbox"
-        className="bg-black text-white text-center border-0"
+        className={`text-center border-0 ${
+          pathname === "/Kambaz/Inbox" ? "bg-white text-danger" : "bg-black text-white"
+        }`}
       >
-        <FaInbox className="fs-1 text-danger" />
+        <FaInbox
+          className={`fs-1 ${
+            pathname === "/Kambaz/Inbox" ? "text-danger" : "text-danger"
+          }`}
+        />
         <br />
         Inbox
       </ListGroup.Item>
       <br />
 
-      {/* Link back to labs */}
+      {/* Labs */}
       <ListGroup.Item
         as={Link}
         to="/Labs"
-        className="bg-black text-white text-center border-0"
+        className={`text-center border-0 ${
+          pathname === "/Labs" ? "bg-white text-danger" : "bg-black text-white"
+        }`}
       >
-        <LiaCogSolid className="fs-1 text-danger" />
+        <LiaCogSolid
+          className={`fs-1 ${
+            pathname === "/Labs" ? "text-danger" : "text-danger"
+          }`}
+        />
         <br />
         Labs
       </ListGroup.Item>
