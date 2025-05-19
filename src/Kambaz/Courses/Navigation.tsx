@@ -30,7 +30,7 @@ export default function CourseNavigation() {
         id="wd-course-zoom-link"
         className="list-group-item text-danger border-0"
       >
-        Zoom
+        Zoom Meetings
       </Link>
       <Link
         to="/Kambaz/Courses/1234/Assignments"
@@ -59,6 +59,13 @@ export default function CourseNavigation() {
         className="list-group-item text-danger border-0"
       >
         People
+      </Link>
+      <Link
+        to="/Kambaz/Courses/1234/Settings"
+        id="wd-course-people-link"
+        className="list-group-item text-danger border-0"
+      >
+        Settings
       </Link>
     </div>
   );

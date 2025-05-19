@@ -1,93 +1,45 @@
-import { Button, Dropdown } from "react-bootstrap";
-import { FaPlus } from "react-icons/fa6";
 import { BsGripVertical } from "react-icons/bs";
 import ModuleControlButtons from "./ModuleControlButtons";
 import LessonControlButtons from "./LessonControlButtons";
+import ModulesControls from "./ModulesControls";
+import { ListGroup } from "react-bootstrap";
 
 export default function Modules() {
   return (
     <div>
-      <h2>Modules</h2>
-
-      <div className="text-nowrap mb-5 position-relative">
-        {/* Collapse All, View Progress, Publish All (dropdown), +Module */}
-        <Button variant="secondary" size="lg" className="me-2" id="wd-collapse-all">
-          Collapse All
-        </Button>
-        <Button variant="secondary" size="lg" className="me-2" id="wd-view-progress">
-          View Progress
-        </Button>
-
-        <Dropdown className="me-2" style={{ display: "inline-block" }}>
-          <Dropdown.Toggle variant="secondary" id="wd-publish-all-btn" size="lg">
-            Publish All
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item id="wd-publish-all-modules-and-items">
-              Publish All Modules & Items
-            </Dropdown.Item>
-            <Dropdown.Item id="wd-publish-modules-only">
-              Publish Modules Only
-            </Dropdown.Item>
-            <Dropdown.Item id="wd-unpublish-all-modules-and-items">
-              Unpublish All Modules & Items
-            </Dropdown.Item>
-            <Dropdown.Item id="wd-unpublish-modules-only">
-              Unpublish Modules Only
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-
-        <Button variant="danger" size="lg" id="wd-add-module-btn">
-          <FaPlus className="me-1" />
-          Module
-        </Button>
+  <ModulesControls /><br /><br /><br /><br />
+  <ListGroup className="rounded-0" id="wd-modules">
+    <ListGroup.Item className="wd-module p-0 mb-5 fs-5 border-gray">
+      <div className="wd-title p-3 ps-2 bg-secondary"> 
+        <BsGripVertical className="me-2 fs-3" />Week 1 <ModuleControlButtons />
       </div>
-
-      {/* Example: 2 modules, each with lessons */}
-      <div className="list-group">
-        {/* Module #1 */}
-        <div className="list-group-item p-0 mb-5 fs-5" style={{ border: "1px solid gray" }}>
-          <div className="p-3 ps-2 bg-secondary text-dark">
-            <BsGripVertical className="me-2 fs-4" />
-            Week 1
-            <ModuleControlButtons />
-          </div>
-          <div className="list-group">
-            <div className="list-group-item p-3 ps-2" style={{ borderLeft: "3px solid green" }}>
-              <BsGripVertical className="me-2 fs-4" />
-              LEARNING OBJECTIVES
-              <LessonControlButtons />
-            </div>
-            <div className="list-group-item p-3 ps-2" style={{ borderLeft: "3px solid green" }}>
-              <BsGripVertical className="me-2 fs-4" />
-              Introduction to the course
-              <LessonControlButtons />
-            </div>
-          </div>
-        </div>
-
-        {/* Module #2 */}
-        <div className="list-group-item p-0 mb-5 fs-5" style={{ border: "1px solid gray" }}>
-          <div className="p-3 ps-2 bg-secondary text-dark">
-            <BsGripVertical className="me-2 fs-4" />
-            Week 2
-            <ModuleControlButtons />
-          </div>
-          <div className="list-group">
-            <div className="list-group-item p-3 ps-2" style={{ borderLeft: "3px solid green" }}>
-              <BsGripVertical className="me-2 fs-4" />
-              LESSON 1
-              <LessonControlButtons />
-            </div>
-            <div className="list-group-item p-3 ps-2" style={{ borderLeft: "3px solid green" }}>
-              <BsGripVertical className="me-2 fs-4" />
-              LESSON 2
-              <LessonControlButtons />
-            </div>
-          </div>
-        </div>
+      <ListGroup className="wd-lessons rounded-0">
+        <ListGroup.Item className="wd-lesson p-3 ps-1">
+          <BsGripVertical className="me-2 fs-3" /> LEARNING OBJECTIVES <LessonControlButtons />
+        </ListGroup.Item>
+        <ListGroup.Item className="wd-lesson p-3 ps-1">
+          <BsGripVertical className="me-2 fs-3" />Introduction to the course <LessonControlButtons />
+        </ListGroup.Item>
+        <ListGroup.Item className="wd-lesson p-3 ps-1">
+          <BsGripVertical className="me-2 fs-3" />Learn what is Web Development <LessonControlButtons />
+        </ListGroup.Item>
+      </ListGroup>
+    </ListGroup.Item>
+    <ListGroup.Item className="wd-module p-0 mb-5 fs-5 border-gray">
+      <div className="wd-title p-3 ps-2 bg-secondary"> 
+        <BsGripVertical className="me-2 fs-3" />Week 2 <ModuleControlButtons />
       </div>
-    </div>
+      <ListGroup className="wd-lessons rounded-0">
+        <ListGroup.Item className="wd-lesson p-3 ps-1">
+          <BsGripVertical className="me-2 fs-3" />LESSON 1 <LessonControlButtons />
+        </ListGroup.Item>
+        <ListGroup.Item className="wd-lesson p-3 ps-1">
+          <BsGripVertical className="me-2 fs-3" />LESSON 2 <LessonControlButtons />
+        </ListGroup.Item>
+      </ListGroup>
+    </ListGroup.Item>
+  </ListGroup>
+</div>
+
   );
 }

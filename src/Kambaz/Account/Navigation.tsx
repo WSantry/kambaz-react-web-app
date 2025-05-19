@@ -1,18 +1,30 @@
 import { Link } from "react-router-dom";
-import { ListGroup } from "react-bootstrap";
+import "./Navigation.css"; // optional, if you want consistent active styling
 
 export default function AccountNavigation() {
   return (
-    <ListGroup>
-      <ListGroup.Item as={Link} to="/Kambaz/Account/Signin">
+    <div id="wd-account-navigation" className="list-group fs-5 rounded-0">
+      <Link
+        to="/Kambaz/Account/Signin"
+        id="wd-account-signin-link"
+        className="list-group-item active border-0"
+      >
         Signin
-      </ListGroup.Item>
-      <ListGroup.Item as={Link} to="/Kambaz/Account/Signup">
+      </Link>
+      <Link
+        to="/Kambaz/Account/Signup"
+        id="wd-account-signup-link"
+        className="list-group-item text-danger border-0"
+      >
         Signup
-      </ListGroup.Item>
-      <ListGroup.Item as={Link} to="/Kambaz/Account/Profile">
+      </Link>
+      <Link
+        to="/Kambaz/Account/Profile"
+        id="wd-account-profile-link"
+        className="list-group-item text-danger border-0"
+      >
         Profile
-      </ListGroup.Item>
-    </ListGroup>
+      </Link>
+    </div>
   );
 }

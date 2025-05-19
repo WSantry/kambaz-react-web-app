@@ -182,34 +182,29 @@ export default function Lab2() {
       {/* 9. Dimensions */}
       <h3>Dimensions</h3>
       <div className="wd-dimension-landscape wd-bg-color-yellow mb-3">
-        Yellow DIV longer (width=100px) than tall (height=75px)
+        Yellow DIV longer than tall
       </div>
       <div className="wd-dimension-portrait wd-bg-color-blue wd-fg-color-white mb-3">
-        Blue DIV taller (height=100px) than wide (width=75px)
+        Blue DIV taller than wide 
       </div>
       <div className="wd-dimension-square wd-bg-color-red mb-3">
-        Red DIV same height & width
+        Red DIV same square
       </div>
 
       {/* 10. Position Relative */}
       <h3>Relative Position</h3>
-      <div className="wd-bg-color-gray mb-3 p-2">
-        <div className="wd-bg-color-yellow wd-dimension-portrait">
-          <div className="wd-pos-relative-nudge-down-right">
-            Yellow nudged down & right
-          </div>
-        </div>
-        <div className="
-            wd-pos-relative-nudge-up-right
-            wd-bg-color-blue
-            wd-fg-color-white
-            wd-dimension-landscape
-            mt-3
-          "
-        >
-          Blue DIV moved up & right a bit
-        </div>
-      </div>
+      <div className="wd-bg-color-gray">
+    <div className="wd-bg-color-yellow 
+                    wd-dimension-portrait">
+      <div className="wd-pos-relative-nudge-down-right">
+        Portrait</div></div>
+    <div className="wd-pos-relative-nudge-up-right 
+        wd-bg-color-blue wd-fg-color-white 
+        wd-dimension-landscape">
+      Landscape</div>
+    <div className="wd-bg-color-red wd-dimension-square">
+      Square</div>
+  </div>
 
       {/* 11. Absolute Position */}
       <h3>Absolute Position</h3>
@@ -254,29 +249,66 @@ export default function Lab2() {
       {/* 14. Floating */}
       <h3>Float</h3>
       <div>
-        <div className="wd-float-left wd-dimension-portrait wd-bg-color-yellow text-center">
-          Yellow
-        </div>
-        <div className="wd-float-left wd-dimension-portrait wd-bg-color-blue wd-fg-color-white text-center">
-          Blue
-        </div>
-        <div className="wd-float-left wd-dimension-portrait wd-bg-color-red text-center">
-          Red
-        </div>
-        <div className="wd-float-done"></div>
-      </div>
-      <br />
-      <p>
-        Also try floating an image to the right:
-        <img
-          src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg"
-          alt="Starship"
-          width="150"
-          className="wd-float-right ms-2"
-        />
-        Lorem ipsum ...
-      </p>
-      <div className="wd-float-done mb-3"></div>
+   <img className="wd-float-right"
+     src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg"/>
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   <img className="wd-float-left"
+     src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg"/>
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   <img className="wd-float-right"
+     src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg"/>
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   <img className="wd-float-left"
+     src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg"/>
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius hic ...
+   <div className="wd-float-done"></div>
+ </div>
+ <br />
+      <div>
+   <div className="wd-float-left wd-dimension-portrait wd-bg-color-yellow">
+     Yellow </div>
+   <div className="wd-float-left wd-dimension-portrait wd-bg-color-blue wd-fg-color-white">
+     Blue </div>
+   <div className="wd-float-left wd-dimension-portrait wd-bg-color-red">
+     Red </div>
+   <img className="wd-float-right"
+     src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg"/>
+   <div className="wd-float-done"></div>
+ </div>
 
       {/* 15. Grid Layout */}
       <h3>Grid Layout (float-based)</h3>
@@ -517,21 +549,16 @@ export default function Lab2() {
         <option value="3">Three</option>
       </FormSelect>
       <h4>Switches</h4>
-      <Form.Check
-        type="switch"
-        id="wd-switch-1"
-        checked={switch1}
-        onChange={() => setSwitch1(!switch1)}
-        label="Unchecked switch"
-      />
-      <Form.Check
-        type="switch"
-        id="wd-switch-2"
-        checked={switch2}
-        onChange={() => setSwitch2(!switch2)}
-        label="Checked switch"
-      />
-      <Form.Check type="switch" disabled label="Disabled switch" />
+      <Form.Check type="switch" checked={false} id="wd-switch-1"
+              label="Unchecked switch checkbox input"/>
+  <Form.Check type="switch" checked={true}  id="wd-switch-2"
+              label="Checked switch checkbox input"/>
+  <Form.Check type="switch" checked={false} disabled
+              id="custom-switch"
+              label="Unchecked disabled switch checkbox input"/>
+  <Form.Check type="switch" checked={true} disabled 
+              id="custom-switch"
+              label="Checked disabled switch checkbox input"/>
 
       <h4>Range</h4>
       <FormGroup controlId="wd-range1">
@@ -634,7 +661,7 @@ export default function Lab2() {
       <h3>Navigation Tabs</h3>
       <Nav variant="tabs" className="mb-3">
         <Nav.Item>
-          <Nav.Link href="#/Labs/Lab2/Active">Active</Nav.Link>
+          <Nav.Link href="#/Labs/Lab2/Active" active>Active</Nav.Link>
         </Nav.Item>
         <Nav.Item>
           <Nav.Link href="#/Labs/Lab2/Link1">Link 1</Nav.Link>

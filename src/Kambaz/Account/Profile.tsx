@@ -4,7 +4,7 @@ import { Form } from "react-bootstrap";
 export default function Profile() {
   return (
     <div id="wd-profile-screen" style={{ maxWidth: "400px" }}>
-      <h3>Profile</h3>
+      <h1>Profile</h1>
 
       <Form.Group className="mb-2" controlId="wd-username">
         <Form.Label>Username</Form.Label>
@@ -46,9 +46,13 @@ export default function Profile() {
         </Form.Select>
       </Form.Group>
 
-      <Link to="/Kambaz/Account/Signin" className="btn btn-secondary mt-3">
-        Sign out
-      </Link>
+      <Link
+  to="/Kambaz/Account/Signin"
+  id="wd-signout-btn"
+  className="btn btn-danger w-100 mb-2"
+>
+  Sign out
+</Link>
     </div>
   );
 }

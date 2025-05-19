@@ -3,7 +3,11 @@ import { MdDoNotDisturbAlt } from "react-icons/md";
 import { FaCheckCircle } from "react-icons/fa";
 import { BiBell } from "react-icons/bi";
 import { LiaChartBarSolid } from "react-icons/lia";
-import { FaUserGraduate } from "react-icons/fa";
+import { BiImport } from "react-icons/bi";
+import { LiaFileImportSolid } from "react-icons/lia";
+import { BsHouse } from "react-icons/bs";
+import { BsBook } from "react-icons/bs"
+import { BsMegaphone } from "react-icons/bs";
 
 export default function CourseStatus() {
   return (
@@ -20,16 +24,32 @@ export default function CourseStatus() {
         </Button>
       </div>
       <Button variant="secondary" size="lg" className="w-100 mb-2 text-start">
-        <BiBell className="me-2 fs-5" />
-        View Course Notifications
+        <BiImport className="me-2 fs-5" />
+        Import from Commons
+      </Button>
+      <Button variant="secondary" size="lg" className="w-100 mb-2 text-start">
+        <LiaFileImportSolid className="me-2 fs-5" />
+        Import from Commons
+      </Button>
+      <Button variant="secondary" size="lg" className="w-100 mb-2 text-start">
+        <BsHouse className="me-2 fs-5" />
+        Choose Home Page
+      </Button>
+      <Button variant="secondary" size="lg" className="w-100 mb-2 text-start">
+        <BsBook className="me-2 fs-5" />
+        View Course Screen
+      </Button>
+      <Button variant="secondary" size="lg" className="w-100 mb-2 text-start">
+        <BsMegaphone className="me-2 fs-5" />
+        New Announcement
       </Button>
       <Button variant="secondary" size="lg" className="w-100 mb-2 text-start">
         <LiaChartBarSolid className="me-2 fs-5" />
-        View Course Analytics
+        New Analytics
       </Button>
       <Button variant="secondary" size="lg" className="w-100 mb-2 text-start">
-        <FaUserGraduate className="me-2 fs-5" />
-        Student View
+        <BiBell className="me-2 fs-5" />
+        View Course Notifications
       </Button>
     </div>
   );

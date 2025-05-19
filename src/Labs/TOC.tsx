@@ -3,14 +3,14 @@ import { Link } from "react-router-dom";
 
 export default function TOC() {
   return (
-    <Nav variant="pills" className="mb-3">
+    <Nav variant="pills">
       <Nav.Item>
         <Nav.Link as={Link} to="/Labs/Lab1">
           Lab 1
         </Nav.Link>
       </Nav.Item>
       <Nav.Item>
-        <Nav.Link as={Link} to="/Labs/Lab2">
+        <Nav.Link as={Link} to="/Labs/Lab2" active>
           Lab 2
         </Nav.Link>
       </Nav.Item>
