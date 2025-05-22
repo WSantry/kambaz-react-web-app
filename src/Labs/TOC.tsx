@@ -2,7 +2,7 @@ import { Nav } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 
 export default function TOC() {
-  const location = useLocation();
+  const { pathname } = useLocation();
 
   return (
     <Nav variant="pills">
@@ -10,7 +10,7 @@ export default function TOC() {
         <Nav.Link
           as={Link}
           to="/Labs/Lab1"
-          active={location.pathname === "/Labs/Lab1"}
+          active={pathname.includes("Lab1")}
         >
           Lab 1
         </Nav.Link>
@@ -19,7 +19,7 @@ export default function TOC() {
         <Nav.Link
           as={Link}
           to="/Labs/Lab2"
-          active={location.pathname === "/Labs/Lab2"}
+          active={pathname.includes("Lab2")}
         >
           Lab 2
         </Nav.Link>
@@ -28,7 +28,7 @@ export default function TOC() {
         <Nav.Link
           as={Link}
           to="/Labs/Lab3"
-          active={location.pathname === "/Labs/Lab3"}
+          active={pathname.includes("Lab3")}
         >
           Lab 3
         </Nav.Link>
