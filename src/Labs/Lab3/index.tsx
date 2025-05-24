@@ -78,9 +78,8 @@ function Lab3Main() {
       <Square>4</Square>
       <hr />
       <Highlight>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-        <br />
-        This text is highlighted in red on yellow.
+         Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipitratione eaque illo minus cum, saepe totam
+        vel nihil repellat nemo explicabo excepturi consectetur. Modi omnis minus sequi maiores, provident voluptates.
       </Highlight>
 
       <hr />

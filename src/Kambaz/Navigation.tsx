@@ -9,6 +9,40 @@ import { FaInbox } from "react-icons/fa";
 export default function KambazNavigation() {
   const { pathname } = useLocation();
 
+  // Define navigation links (except NEU logo and Account)
+  const links = [
+    {
+      label: "Dashboard",
+      path: "/Kambaz/Dashboard",
+      icon: AiOutlineDashboard,
+      isActive: pathname === "/Kambaz/Dashboard",
+    },
+    {
+      label: "Courses",
+      path: "/Kambaz/Dashboard", 
+      icon: LiaBookSolid,
+      isActive: pathname.startsWith("/Kambaz/Courses"),
+    },
+    {
+      label: "Calendar",
+      path: "/Kambaz/Calendar",
+      icon: IoCalendarOutline,
+      isActive: pathname === "/Kambaz/Calendar",
+    },
+    {
+      label: "Inbox",
+      path: "/Kambaz/Inbox",
+      icon: FaInbox,
+      isActive: pathname === "/Kambaz/Inbox",
+    },
+    {
+      label: "Labs",
+      path: "/Labs",
+      icon: LiaCogSolid,
+      isActive: pathname === "/Labs",
+    },
+  ];
+
   return (
     <ListGroup
       id="wd-kambaz-navigation"
@@ -39,7 +73,9 @@ export default function KambazNavigation() {
         as={Link}
         to="/Kambaz/Account"
         className={`text-center border-0 ${
-          pathname.startsWith("/Kambaz/Account") ? "bg-white text-danger" : "bg-black text-white"
+          pathname.startsWith("/Kambaz/Account")
+            ? "bg-white text-danger"
+            : "bg-black text-white"
         }`}
       >
         <FaRegCircleUser
@@ -52,94 +88,21 @@ export default function KambazNavigation() {
       </ListGroup.Item>
       <br />
 
-      {/* Dashboard */}
-      <ListGroup.Item
-        as={Link}
-        to="/Kambaz/Dashboard"
-        className={`text-center border-0 ${
-          pathname === "/Kambaz/Dashboard" ? "bg-white text-danger" : "bg-black text-white"
-        }`}
-      >
-        <AiOutlineDashboard
-          className={`fs-1 ${
-            pathname === "/Kambaz/Dashboard" ? "text-danger" : "text-danger"
+      {/* Other navigation items */}
+      {links.map(({ label, path, icon: Icon, isActive }) => (
+        <ListGroup.Item
+          key={label}
+          as={Link}
+          to={path}
+          className={`text-center border-0 ${
+            isActive ? "bg-white text-danger" : "bg-black text-white"
           }`}
-        />
-        <br />
-        Dashboard
-      </ListGroup.Item>
-      <br />
-
-      {/* Courses */}
-      <ListGroup.Item
-        as={Link}
-        to="/Kambaz/Dashboard"
-        className={`text-center border-0 ${
-          pathname.startsWith("/Kambaz/Courses") ? "bg-white text-danger" : "bg-black text-white"
-        }`}
-      >
-        <LiaBookSolid
-          className={`fs-1 ${
-            pathname.startsWith("/Kambaz/Courses") ? "text-danger" : "text-danger"
-          }`}
-        />
-        <br />
-        Courses
-      </ListGroup.Item>
-      <br />
-
-      {/* Calendar */}
-      <ListGroup.Item
-        as={Link}
-        to="/Kambaz/Calendar"
-        className={`text-center border-0 ${
-          pathname === "/Kambaz/Calendar" ? "bg-white text-danger" : "bg-black text-white"
-        }`}
-      >
-        <IoCalendarOutline
-          className={`fs-1 ${
-            pathname === "/Kambaz/Calendar" ? "text-danger" : "text-danger"
-          }`}
-        />
-        <br />
-        Calendar
-      </ListGroup.Item>
-      <br />
-
-      {/* Inbox */}
-      <ListGroup.Item
-        as={Link}
-        to="/Kambaz/Inbox"
-        className={`text-center border-0 ${
-          pathname === "/Kambaz/Inbox" ? "bg-white text-danger" : "bg-black text-white"
-        }`}
-      >
-        <FaInbox
-          className={`fs-1 ${
-            pathname === "/Kambaz/Inbox" ? "text-danger" : "text-danger"
-          }`}
-        />
-        <br />
-        Inbox
-      </ListGroup.Item>
-      <br />
-
-      {/* Labs */}
-      <ListGroup.Item
-        as={Link}
-        to="/Labs"
-        className={`text-center border-0 ${
-          pathname === "/Labs" ? "bg-white text-danger" : "bg-black text-white"
-        }`}
-      >
-        <LiaCogSolid
-          className={`fs-1 ${
-            pathname === "/Labs" ? "text-danger" : "text-danger"
-          }`}
-        />
-        <br />
-        Labs
-      </ListGroup.Item>
+        >
+          <Icon className={`fs-1 ${isActive ? "text-danger" : "text-danger"}`} />
+          <br />
+          {label}
+        </ListGroup.Item>
+      ))}
     </ListGroup>
   );
 }
