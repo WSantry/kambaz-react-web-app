@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button, Form } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -86,10 +86,10 @@ export default function Profile() {
             className="form-control mb-2"
             id="wd-role"
           >
-            <option value="USER">User</option>
-            <option value="ADMIN">Admin</option>
-            <option value="FACULTY">Faculty</option>
             <option value="STUDENT">Student</option>
+            <option value="TA">TA</option>
+            <option value="FACULTY">Faculty</option>
+            <option value="ADMIN">Admin</option>
           </select>
           <Button
             variant="danger"

@@ -14,5 +14,5 @@ export default function Signup() {
             to="/Kambaz/Account/Profile"
             className="btn btn-primary w-100 mb-2">
             Signup </Link>
-      <Link id="wd-signin-link" to="/Kambaz/Account/Sign in">Signin</Link>
+      <Link id="wd-signin-link" to="/Kambaz/Account/Signin">Signin</Link>
     </div> );}

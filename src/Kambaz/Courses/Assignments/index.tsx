@@ -2,12 +2,14 @@
 import { useParams, Link } from "react-router-dom";
 import { ListGroup } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
-import { assignments } from "../../Database";
+import { assignments as dbAssignments } from "../../Database";
 
 import AssignmentControls from "./AssignmentControls";
 import AssignmentControlButtons from "./AssignmentControlButtons";
 import LessonControlButtons from "../Modules/LessonControlButtons";
-import { FaFilePen } from "react-icons/fa6";
+import { FaFilePen, FaTrash } from "react-icons/fa6";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteAssignment } from "./reducer";
 
 function formatDate(isoString: string) {
   if (!isoString) return "";
@@ -19,7 +21,6 @@ function formatDate(isoString: string) {
     minute: "2-digit",
     hour12: true,
   };
-  // "May 13, 11:59 PM" => "May 13 at 11:59 pm"
   return date
     .toLocaleString("en-US", options)
     .replace(",", " at")
@@ -28,7 +29,20 @@ function formatDate(isoString: string) {
 
 export default function Assignments() {
   const { cid } = useParams();
-  const filtered = assignments.filter(a => a.course === cid);
+  const dispatch = useDispatch();
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+
+  // Filter to only the assignments for the current course
+  const filtered = assignments.filter((a: any) => a.course === cid);
+
+  // Handler for deletion
+  const handleDelete = (assignmentId: string) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete?");
+    if (confirmDelete) {
+      dispatch(deleteAssignment(assignmentId));
+    }
+  };
 
   return (
     <div id="wd-assignments" className="p-3">
@@ -46,7 +60,7 @@ export default function Assignments() {
           </div>
 
           <ListGroup className="wd-lessons rounded-0">
-            {filtered.map(assn => (
+            {filtered.map((assn: any) => (
               <ListGroup.Item
                 key={assn._id}
                 className="wd-lesson p-3 ps-1 d-flex align-items-center"
@@ -54,6 +68,7 @@ export default function Assignments() {
                 <BsGripVertical className="me-2 fs-3" />
                 <FaFilePen className="me-3 text-success" />
                 <div className="flex-fill">
+                  {/* Link to editing (not 'new') */}
                   <Link
                     to={`/Kambaz/Courses/${cid}/Assignments/${assn._id}`}
                     className="fw-bold text-decoration-none text-dark"
@@ -63,11 +78,23 @@ export default function Assignments() {
                   <br />
                   <small className="text-muted">
                     <span className="text-danger">Multiple Modules</span>&nbsp;|&nbsp;
-                    <b>Not available until</b>  {formatDate(assn.availableDate ?? "")}&nbsp;|&nbsp;
+                    <b>Not available until</b>{" "}
+                    {formatDate(assn.availableDate ?? "")}&nbsp;|&nbsp;
                     <b>Due</b> {formatDate(assn.dueDate ?? "")} | {assn.points} pts
                   </small>
                 </div>
-                <LessonControlButtons />
+
+                {/* Optional controls: Student see or not? */}
+                {currentUser.role === "FACULTY" && (
+                  <div className="d-flex align-items-center">
+                    <FaTrash
+                      className="text-danger ms-3"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => handleDelete(assn._id)}
+                    />
+                                        <LessonControlButtons />
+                  </div>
+                )}
               </ListGroup.Item>
             ))}
           </ListGroup>
