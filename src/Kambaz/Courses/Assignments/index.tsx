@@ -2,8 +2,6 @@
 import { useParams, Link } from "react-router-dom";
 import { ListGroup } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
-import { assignments as dbAssignments } from "../../Database";
-
 import AssignmentControls from "./AssignmentControls";
 import AssignmentControlButtons from "./AssignmentControlButtons";
 import LessonControlButtons from "../Modules/LessonControlButtons";
@@ -88,11 +86,11 @@ export default function Assignments() {
                 {currentUser.role === "FACULTY" && (
                   <div className="d-flex align-items-center">
                     <FaTrash
-                      className="text-danger ms-3"
+                      className="text-danger me-1 fs-4"
                       style={{ cursor: "pointer" }}
                       onClick={() => handleDelete(assn._id)}
                     />
-                                        <LessonControlButtons />
+                    <LessonControlButtons />
                   </div>
                 )}
               </ListGroup.Item>

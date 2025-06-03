@@ -15,11 +15,13 @@ export default function ModuleControlButtons({ moduleId, deleteModule, editModul
       {currentUser.role === "FACULTY" && (
         <>
           <FaPencil
+            style={{ cursor: "pointer" }}
             onClick={() => editModule(moduleId)}
-            className="text-primary me-3"
+            className="text-primary me-1"
           />
           <FaTrash
-            className="text-danger me-2 mb-1"
+            style={{ cursor: "pointer" }}
+            className="text-danger me-1"
             onClick={() => deleteModule(moduleId)}
           />
         </>
