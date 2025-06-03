@@ -36,7 +36,7 @@ export default function Assignments() {
 
   // Handler for deletion
   const handleDelete = (assignmentId: string) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete?");
+    const confirmDelete = window.confirm("Are you sure you want to delete this assignment?");
     if (confirmDelete) {
       dispatch(deleteAssignment(assignmentId));
     }

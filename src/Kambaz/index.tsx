@@ -5,6 +5,7 @@ import Account from "./Account";
 import Dashboard from "./Dashboard";
 import Courses from "./Courses";
 import ProtectedRoute from "./Account/ProtectedRoute";
+import EnrolledRoute from "./Courses/EnrolledRoute";   // NEW
 
 export default function Kambaz() {
   return (
@@ -13,11 +14,37 @@ export default function Kambaz() {
       <div className="wd-main-content-offset p-3">
         <Routes>
           <Route path="/" element={<Navigate to="Account" />} />
+
+          {/* account */}
           <Route path="/Account/*" element={<Account />} />
-          <Route path="/Dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/Courses/:cid/*" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
+
+          {/* dashboard (any signed-in user) */}
+          <Route
+            path="/Dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* courses – must be signed in *and* enrolled */}
+          <Route
+            path="/Courses/:cid/*"
+            element={
+              <ProtectedRoute>
+                <EnrolledRoute>
+                  <Courses />
+                </EnrolledRoute>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* misc */}
           <Route path="/Calendar" element={<h1>Calendar</h1>} />
           <Route path="/Inbox" element={<h1>Inbox</h1>} />
+
+          {/* catch-all */}
           <Route path="*" element={<Navigate to="Account" />} />
         </Routes>
       </div>

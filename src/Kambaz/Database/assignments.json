@@ -17,7 +17,7 @@
     "_id": "A102",
     "title": "Combustion Analysis",
     "course": "RS101",
-    "description": "Analyze the combustion process for a solid rocket motor and provide your calculations.\n\nSubmit a PDF file of your assignment on Kambaz.\nMake sure to write your full name and section at the top of the assignment.",
+    "description": "Analyze the combustion process for a solid rocket motor and provide your calculations and simulations.\n\nSubmit a PDF file of your calculations and URL of your simulations on Kambaz.\nMake sure to write your full name and section at the top of the assignment.",
     "points": "120",
     "assignmentGroup": "Assignments",
     "submissionType": "online",

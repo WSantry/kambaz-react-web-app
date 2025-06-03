@@ -22,7 +22,14 @@ export default function ModuleControlButtons({ moduleId, deleteModule, editModul
           <FaTrash
             style={{ cursor: "pointer" }}
             className="text-danger me-1"
-            onClick={() => deleteModule(moduleId)}
+            onClick={() => {
+              const ok = window.confirm(
+                "Are you sure you want to delete this module?"
+              );
+              if (ok) {
+                deleteModule(moduleId);
+              }
+            }}
           />
         </>
       )}
