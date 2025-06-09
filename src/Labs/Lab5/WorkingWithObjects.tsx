@@ -34,7 +34,7 @@ export default function WorkingWithObjects() {
             <a id="wd-update-assignment-title" className="btn btn-primary float-end"
                 href={`${ASSIGN_API}/title/${assignment.title}`}>Update Title</a>
             <FormControl id="wd-assignment-title" className="w-75"
-                value={assignment.title}
+                defaultValue={assignment.title}
                 onChange={e => setAssignment({ ...assignment, title: e.target.value })} />
             <hr />
 

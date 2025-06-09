@@ -14,19 +14,9 @@ export default function Labs() {
       <div id="wd-labs">
         <h1>Labs</h1>
 
-        <p>Author: <strong>Willem Santry (Section XYZ)</strong></p>
+        <p>Author: <strong>Willem Santry</strong></p>
         <p>
           <a href="#/Kambaz">Go to Kambaz</a>
-        </p>
-        <p>
-          <a
-            id="wd-github"
-            href="https://github.com/WSantry/kambaz-react-web-app.git"
-            target="_blank"
-            rel="noreferrer"
-          >
-            My GitHub Repo
-          </a>
         </p>
 
         {/* Table of Contents */}
