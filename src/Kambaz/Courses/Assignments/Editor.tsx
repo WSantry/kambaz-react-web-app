@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import { addAssignment, updateAssignment } from "./reducer";
+import * as client from "./client"; 
 
 type OnlineEntryOption =
   | "text"
@@ -75,7 +76,7 @@ export default function AssignmentEditor() {
     assignmentGroup: "Assignments",
     displayGradeAs: "points",
     submissionType: "online",
-    onlineEntryOption: ["fileup"], 
+    onlineEntryOption: ["fileup"],
     assignTo: "Students",
     course: cid,
     ...getDefaultDates(),
@@ -97,9 +98,9 @@ export default function AssignmentEditor() {
           onlineEntryOption:
             typeof existingAssignment.onlineEntryOption === "string"
               ? (existingAssignment.onlineEntryOption
-                  .split(",")
-                  .map((s: string) => s.trim())
-                  .filter(Boolean) as OnlineEntryOption[])
+                .split(",")
+                .map((s: string) => s.trim())
+                .filter(Boolean) as OnlineEntryOption[])
               : (existingAssignment.onlineEntryOption as OnlineEntryOption[]),
         };
         if (loaded.submissionType === "onpaper") {
@@ -127,15 +128,16 @@ export default function AssignmentEditor() {
       };
     });
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const payload = {
       ...assignmentData,
       onlineEntryOption: assignmentData.onlineEntryOption.join(","),
     };
-
     if (aid === "new") {
-      dispatch(addAssignment(payload));
+      const created = await client.createAssignmentForCourse(cid!, payload);
+      dispatch(addAssignment(created));
     } else {
+      await client.updateAssignment(payload);
       dispatch(updateAssignment(payload));
     }
     navigate(`/Kambaz/Courses/${cid}/Assignments`);

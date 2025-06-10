@@ -1,73 +1,88 @@
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { addCourse, deleteCourse, updateCourse } from "../Courses/reducer";
+import { Row, Col, Card, Button, FormControl } from "react-bootstrap";
+import { Link } from "react-router-dom";
+
+import {
+  addCourse as addCourseLocal,
+  deleteCourse as deleteCourseLocal,
+  updateCourse as updateCourseLocal,
+} from "../Courses/reducer";
 import {
   enrollCourse,
   unenrollCourse,
+  setEnrollments,
 } from "../Courses/Enrollments/reducer";
-import {
-  Row,
-  Col,
-  Card,
-  Button,
-  FormControl,
-} from "react-bootstrap";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+
+import * as userClient   from "../Account/client";
+import * as courseClient from "../Courses/client";
+import * as enrollClient from "../Courses/Enrollments/client";
 
 export default function Dashboard() {
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const { courses } = useSelector((state: any) => state.coursesReducer);
-  const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
+  const { currentUser }  = useSelector((s: any) => s.accountReducer);
+  const { courses }      = useSelector((s: any) => s.coursesReducer);
+  const { enrollments }  = useSelector((s: any) => s.enrollmentsReducer);
+  const dispatch         = useDispatch();
 
-  const dispatch = useDispatch();
-
-  /* ---------- local state ---------- */
+  /* local draft */
   const [course, setCourse] = useState<any>({
-    _id: "",
     name: "New Course",
-    number: "",
-    startDate: "",
-    endDate: "",
-    description: "New Description",
+    description: "New description",
   });
+  const [showAll, setShowAll] = useState(false);
 
-  const [showAll, setShowAll] = useState(false); // toggle button
+  /* ─────────────── NEW enrollment-sync effect ─────────────── */
+  useEffect(() => {
+    (async () => {
+      if (currentUser) {
+        const data = await enrollClient.fetchMyEnrollments();
+        dispatch(setEnrollments(data));
+      }
+    })();
+  }, [currentUser, dispatch]);
 
-  /* ---------- helpers ---------- */
-  const handleAddCourse = () => dispatch(addCourse(course));
-  const handleDeleteCourse = (courseId: string) => {
-    const ok = window.confirm("Are you sure you want to delete this course?");
-    if (ok) {
-      dispatch(deleteCourse(courseId));
-    }
+  /* helpers */
+  const isEnrolled = (cid: string) =>
+    enrollments.some((e: any) => e.user === currentUser?._id && e.course === cid);
+
+  const handleAddCourse = async () => {
+    const newCourse = await userClient.createCourse(course);
+    dispatch(addCourseLocal(newCourse));
   };
-  const handleUpdateCourse = () => dispatch(updateCourse(course));
 
-  const isEnrolled = (courseId: string) =>
-    enrollments.some(
-      (e: any) => e.user === currentUser?._id && e.course === courseId
-    );
+  const handleDeleteCourse = async (cid: string) => {
+    if (!window.confirm("Are you sure you want to delete this course?")) return;
+    await courseClient.deleteCourse(cid);
+    dispatch(deleteCourseLocal(cid));
+  };
 
-  const handleEnrollToggle = (courseId: string, enrolled: boolean) => {
+  const handleUpdateCourse = async () => {
+    await courseClient.updateCourse(course);
+    dispatch(updateCourseLocal(course));
+  };
+
+  const handleEnrollToggle = async (cid: string, enrolled: boolean) => {
     if (!currentUser) return;
     if (enrolled) {
-      dispatch(unenrollCourse({ userId: currentUser._id, courseId }));
+      await enrollClient.unenroll(currentUser._id, cid);
+      dispatch(unenrollCourse({ userId: currentUser._id, courseId: cid }));
     } else {
-      dispatch(enrollCourse({ userId: currentUser._id, courseId }));
+      await enrollClient.enroll(currentUser._id, cid);
+      dispatch(enrollCourse({ userId: currentUser._id, courseId: cid }));
     }
   };
 
-  /* ---------- course lists ---------- */
-  const myCourses = courses.filter((c: any) => isEnrolled(c._id));
+  /* filtered lists */
+  const myCourses        = courses.filter((c: any) => isEnrolled(c._id));
   const displayedCourses = showAll ? courses : myCourses;
 
+  /* ——————————————————— render ——————————————————— */
   return (
     <div id="wd-dashboard">
-      <h1 id="wd-dashboard-title" className="d-flex justify-content-between">
+      <h1 className="d-flex justify-content-between">
         Dashboard
         <Button
           id="wd-toggle-enrollments-btn"
-          variant="primary"
           onClick={() => setShowAll(!showAll)}
         >
           Enrollments
@@ -75,29 +90,21 @@ export default function Dashboard() {
       </h1>
       <hr />
 
-      {/* FACULTY — create / edit courses */}
       {currentUser?.role === "FACULTY" && (
         <>
           <h5>
             New or Edit Course
-            <Button
-              variant="primary"
-              className="float-end"
-              id="wd-add-new-course-click"
-              onClick={handleAddCourse}
-            >
+            <Button className="float-end" onClick={handleAddCourse}>
               Add
             </Button>
             <Button
-              variant="warning"
               className="float-end me-2"
-              id="wd-update-course-click"
+              variant="warning"
               onClick={handleUpdateCourse}
             >
               Update
             </Button>
           </h5>
-
           <br />
           <FormControl
             className="mb-2"
@@ -116,114 +123,97 @@ export default function Dashboard() {
         </>
       )}
 
-      <h2 id="wd-dashboard-published">
-        {showAll ? "Published Courses" : "Enrolled Courses"} ({displayedCourses.length})
+      <h2>
+        {showAll ? "Published Courses" : "Enrolled Courses"} (
+        {displayedCourses.length})
       </h2>
       <hr />
 
-      <div id="wd-dashboard-courses">
-        <Row xs={1} md={5} className="g-4">
-          {displayedCourses.map((c: any) => {
-            const enrolled = isEnrolled(c._id);
+      <Row xs={1} md={5} className="g-4">
+        {displayedCourses.map((c: any) => {
+          const enrolled = isEnrolled(c._id);
+          return (
+            <Col key={c._id} style={{ width: 300 }}>
+              <Card className="wd-dashboard-course">
+                <Link
+                  to={
+                    enrolled
+                      ? `/Kambaz/Courses/${c._id}/Home`
+                      : "/Kambaz/Dashboard"
+                  }
+                  className="text-decoration-none text-dark"
+                >
+                  <Card.Img src="/images/reactjs.jpg" height={160} />
+                  <Card.Body>
+                    <Card.Title className="text-nowrap overflow-hidden">
+                      {c.name}
+                    </Card.Title>
+                    <Card.Text
+                      className="overflow-hidden mb-3"
+                      style={{ height: 100 }}
+                    >
+                      {c.description}
+                    </Card.Text>
+                  </Card.Body>
+                </Link>
 
-            return (
-              <Col key={c._id} style={{ width: "300px" }}>
-                <Card className="wd-dashboard-course">
-                  <Link
-                    to={
-                      enrolled
-                        ? `/Kambaz/Courses/${c._id}/Home`
-                        : "/Kambaz/Dashboard"
-                    }
-                    className="wd-dashboard-course-link text-decoration-none text-dark"
-                  >
-                    <Card.Img
-                      src="/images/reactjs.jpg"
-                      variant="top"
-                      width="100%"
-                      height={160}
-                    />
-                    <Card.Body>
-                      <Card.Title className="text-nowrap overflow-hidden">
-                        {c.name}
-                      </Card.Title>
-                      <Card.Text
-                        className="overflow-hidden mb-3"
-                        style={{ height: "100px" }}
-                      >
-                        {c.description}
-                      </Card.Text>
-                    </Card.Body>
-                  </Link>
-
-                  {/* ACTION BUTTONS */}
-                  <div className="d-flex flex-nowrap justify-content-between align-items-center p-2">
-
-                    {/* ---------- LEFT SIDE ---------- */}
-                    <div className="d-flex flex-nowrap gap-2">
-                      {/* Go */}
+                <div className="d-flex justify-content-between align-items-center p-2">
+                  <div className="d-flex gap-2">
+                    <Button
+                      size="sm"
+                      as={Link as any}
+                      to={
+                        enrolled
+                          ? `/Kambaz/Courses/${c._id}/Home`
+                          : "/Kambaz/Dashboard"
+                      }
+                    >
+                      Go
+                    </Button>
+                    {!currentUser?.role?.startsWith("ADMIN") && (
                       <Button
-                        variant="primary"
                         size="sm"
-                        as={Link as any}
-                        to={
-                          enrolled
-                            ? `/Kambaz/Courses/${c._id}/Home`
-                            : "/Kambaz/Dashboard"
-                        }
+                        variant={enrolled ? "danger" : "success"}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleEnrollToggle(c._id, enrolled);
+                        }}
                       >
-                        Go
+                        {enrolled ? "Unenroll" : "Enroll"}
                       </Button>
-
-                      {/* Enroll / Unenroll */}
-                      {!currentUser?.role?.startsWith("ADMIN") && (
-                        <Button
-                          variant={enrolled ? "danger" : "success"}
-                          size="sm"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleEnrollToggle(c._id, enrolled);
-                          }}
-                        >
-                          {enrolled ? "Unenroll" : "Enroll"}
-                        </Button>
-                      )}
-                    </div>
-
-                    {/* ---------- RIGHT SIDE (faculty-only) ---------- */}
-                    {currentUser?.role === "FACULTY" && (
-                      <div className="d-flex flex-nowrap gap-2">
-                        <Button
-                          variant="warning"
-                          size="sm"
-                          id="wd-edit-course-click"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setCourse(c);
-                          }}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          variant="danger"
-                          size="sm"
-                          id="wd-delete-course-click"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleDeleteCourse(c._id);
-                          }}
-                        >
-                          Delete
-                        </Button>
-                      </div>
                     )}
                   </div>
-                </Card>
-              </Col>
-            );
-          })}
-        </Row>
-      </div>
+
+                  {currentUser?.role === "FACULTY" && (
+                    <div className="d-flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="warning"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCourse(c);
+                        }}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="danger"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleDeleteCourse(c._id);
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </Card>
+            </Col>
+          );
+        })}
+      </Row>
     </div>
   );
 }

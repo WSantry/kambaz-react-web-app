@@ -1,53 +1,49 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+
 import "./styles.css";
 import KambazNavigation from "./Navigation";
-import Account from "./Account";
+import Account   from "./Account";
 import Dashboard from "./Dashboard";
-import Courses from "./Courses";
+import Courses   from "./Courses";
 import ProtectedRoute from "./Account/ProtectedRoute";
-import EnrolledRoute from "./Courses/EnrolledRoute";   // NEW
+import EnrolledRoute  from "./Courses/EnrolledRoute";
+import Session        from "./Account/Session";
 
 export default function Kambaz() {
   return (
-    <div id="wd-kambaz">
-      <KambazNavigation />
-      <div className="wd-main-content-offset p-3">
-        <Routes>
-          <Route path="/" element={<Navigate to="Account" />} />
+    <Session>
+      <div id="wd-kambaz">
+        <KambazNavigation />
+        <div className="wd-main-content-offset p-3">
+          <Routes>
+            <Route path="/" element={<Navigate to="Account" />} />
 
-          {/* account */}
-          <Route path="/Account/*" element={<Account />} />
+            {/* account */}
+            <Route path="/Account/*" element={<Account />} />
 
-          {/* dashboard (any signed-in user) */}
-          <Route
-            path="/Dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
+            {/* dashboard */}
+            <Route
+              path="/Dashboard"
+              element={<ProtectedRoute><Dashboard /></ProtectedRoute>}
+            />
 
-          {/* courses – must be signed in *and* enrolled */}
-          <Route
-            path="/Courses/:cid/*"
-            element={
-              <ProtectedRoute>
-                <EnrolledRoute>
-                  <Courses />
-                </EnrolledRoute>
-              </ProtectedRoute>
-            }
-          />
+            {/* courses */}
+            <Route
+              path="/Courses/:cid/*"
+              element={
+                <ProtectedRoute>
+                  <EnrolledRoute><Courses /></EnrolledRoute>
+                </ProtectedRoute>
+              }
+            />
 
-          {/* misc */}
-          <Route path="/Calendar" element={<h1>Calendar</h1>} />
-          <Route path="/Inbox" element={<h1>Inbox</h1>} />
-
-          {/* catch-all */}
-          <Route path="*" element={<Navigate to="Account" />} />
-        </Routes>
+            {/* misc */}
+            <Route path="/Calendar" element={<h1>Calendar</h1>} />
+            <Route path="/Inbox"    element={<h1>Inbox</h1>} />
+            <Route path="*"        element={<Navigate to="Account" />} />
+          </Routes>
+        </div>
       </div>
-    </div>
+    </Session>
   );
 }
