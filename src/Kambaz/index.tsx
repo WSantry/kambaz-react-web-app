@@ -8,8 +8,26 @@ import Courses   from "./Courses";
 import ProtectedRoute from "./Account/ProtectedRoute";
 import EnrolledRoute  from "./Courses/EnrolledRoute";
 import Session        from "./Account/Session";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import * as courseClient from "./Courses/client";
+import { setCourses } from "./Courses/reducer";
 
 export default function Kambaz() {
+  const dispatch = useDispatch();
+
+  /* ─── pull every course from the server on first render ─── */
+  useEffect(() => {
+    (async () => {
+      try {
+        const all = await courseClient.fetchAllCourses();
+        dispatch(setCourses(all));
+      } catch (err) {
+        console.error("Could not load courses:", err);
+      }
+    })();
+  }, [dispatch]);
+
   return (
     <Session>
       <div id="wd-kambaz">

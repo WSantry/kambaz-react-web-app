@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Row, Col, Card, Button, FormControl } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -19,6 +19,7 @@ import * as courseClient from "../Courses/client";
 import * as enrollClient from "../Courses/Enrollments/client";
 
 export default function Dashboard() {
+  const nameInputRef = useRef<HTMLInputElement>(null);
   const { currentUser } = useSelector((s: any) => s.accountReducer);
   const { courses } = useSelector((s: any) => s.coursesReducer);
   const { enrollments } = useSelector((s: any) => s.enrollmentsReducer);
@@ -40,6 +41,13 @@ export default function Dashboard() {
       }
     })();
   }, [currentUser, dispatch]);
+
+  /* focus the name box when a course is selected for editing */
+  useEffect(() => {
+    if (course?._id && nameInputRef.current) {
+      nameInputRef.current.focus();
+    }
+  }, [course]);
 
   /* helpers */
   const isEnrolled = (cid: string) =>
@@ -109,6 +117,7 @@ export default function Dashboard() {
           </h5>
           <br />
           <FormControl
+            ref={nameInputRef}
             className="mb-2"
             value={course.name}
             onChange={(e) => setCourse({ ...course, name: e.target.value })}
