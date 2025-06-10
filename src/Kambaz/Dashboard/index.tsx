@@ -14,15 +14,15 @@ import {
   setEnrollments,
 } from "../Courses/Enrollments/reducer";
 
-import * as userClient   from "../Account/client";
+import * as userClient from "../Account/client";
 import * as courseClient from "../Courses/client";
 import * as enrollClient from "../Courses/Enrollments/client";
 
 export default function Dashboard() {
-  const { currentUser }  = useSelector((s: any) => s.accountReducer);
-  const { courses }      = useSelector((s: any) => s.coursesReducer);
-  const { enrollments }  = useSelector((s: any) => s.enrollmentsReducer);
-  const dispatch         = useDispatch();
+  const { currentUser } = useSelector((s: any) => s.accountReducer);
+  const { courses } = useSelector((s: any) => s.coursesReducer);
+  const { enrollments } = useSelector((s: any) => s.enrollmentsReducer);
+  const dispatch = useDispatch();
 
   /* local draft */
   const [course, setCourse] = useState<any>({
@@ -48,6 +48,7 @@ export default function Dashboard() {
   const handleAddCourse = async () => {
     const newCourse = await userClient.createCourse(course);
     dispatch(addCourseLocal(newCourse));
+    setCourse({ name: "New Course", description: "New description" });
   };
 
   const handleDeleteCourse = async (cid: string) => {
@@ -57,6 +58,7 @@ export default function Dashboard() {
   };
 
   const handleUpdateCourse = async () => {
+    if (!course._id) return alert("Select a course to update.");
     await courseClient.updateCourse(course);
     dispatch(updateCourseLocal(course));
   };
@@ -73,7 +75,7 @@ export default function Dashboard() {
   };
 
   /* filtered lists */
-  const myCourses        = courses.filter((c: any) => isEnrolled(c._id));
+  const myCourses = courses.filter((c: any) => isEnrolled(c._id));
   const displayedCourses = showAll ? courses : myCourses;
 
   /* ——————————————————— render ——————————————————— */
