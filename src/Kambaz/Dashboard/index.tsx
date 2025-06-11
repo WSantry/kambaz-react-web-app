@@ -42,12 +42,15 @@ export default function Dashboard() {
     })();
   }, [currentUser, dispatch]);
 
-  /* focus the name box when a course is selected for editing */
+  /* focus name box only when a *different* course is loaded */
+  const prevId = useRef<string | undefined>(undefined);
+
   useEffect(() => {
-    if (course?._id && nameInputRef.current) {
+    if (course._id && course._id !== prevId.current && nameInputRef.current) {
       nameInputRef.current.focus();
+      prevId.current = course._id;      // remember last focused id
     }
-  }, [course]);
+  }, [course._id]);                      // run only when id changes
 
   /* helpers */
   const isEnrolled = (cid: string) =>
@@ -156,8 +159,11 @@ export default function Dashboard() {
                 >
                   <Card.Img src="/images/reactjs.jpg" height={160} />
                   <Card.Body>
-                    <Card.Title className="text-nowrap overflow-hidden">
-                      {c.name}
+                    <Card.Title
+                      className="text-nowrap overflow-hidden"
+                      style={{ minHeight: "1.25rem" }}   // ≈ line-height of the font
+                    >
+                      {c.name || <span className="text-muted">Untitled</span>}
                     </Card.Title>
                     <Card.Text
                       className="overflow-hidden mb-3"
