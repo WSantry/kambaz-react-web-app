@@ -44,7 +44,7 @@ export default function Users() {
       <h3>Users</h3>
 
       <Button variant="danger" className="float-end mb-2" onClick={addUser}>
-        <FaPlus className="me-2"/> Users
+        <FaPlus className="me-2"/> People
       </Button>
 
       <FormControl

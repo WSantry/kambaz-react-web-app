@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate, useParams, useLocation } from "react-router-dom";
-import { useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 import CourseNavigation from "./Navigation";
 import Home from "./Home";
 import Modules from "./Modules";
@@ -34,6 +34,7 @@ export default function Courses() {
             <Route path="Assignments" element={<Assignments />} />
             <Route path="Assignments/:aid" element={<AssignmentEditor />} />
             <Route path="People" element={<PeopleTable />} />
+            <Route path="People/:uid" element={<PeopleTable />} />
             <Route path="Piazza" element={<h2>Piazza</h2>} />
             <Route path="Zoom" element={<h2>Zoom</h2>} />
             <Route path="Quizzes" element={<h2>Quizzes</h2>} />
