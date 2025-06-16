@@ -26,7 +26,7 @@ export default function Courses() {
           <CourseNavigation />
         </div>
 
-        <div className="flex-fill ms-3">
+        <div className="flex-fill ms-3 overflow-auto" style={{ minWidth: 0 }}>
           <Routes>
             <Route path="/" element={<Navigate to="Home" />} />
             <Route path="Home" element={<Home />} />
