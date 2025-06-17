@@ -52,6 +52,7 @@ export default function PeopleDetails() {
     await client.updateUser(updated);
     setUser(updated);
     setEditing("");
+    navigate(-1);
   };
 
   const saveEmail = async () => {
@@ -60,6 +61,7 @@ export default function PeopleDetails() {
     await client.updateUser(updated);
     setUser(updated);
     setEditing("");
+    navigate(-1);
   };
 
   const saveRole = async () => {
@@ -68,6 +70,7 @@ export default function PeopleDetails() {
     await client.updateUser(updated);
     setUser(updated);
     setEditing("");
+    navigate(-1);
   };
 
   const handleSave = () => {
@@ -87,7 +90,7 @@ export default function PeopleDetails() {
   return (
     <div
       className="wd-people-details position-fixed top-0 end-0 bottom-0 bg-white p-4 shadow w-25"
-      style={{ maxWidth: 420 }}
+      style={{ maxWidth: 420, zIndex: 1050 }} 
     >
       {/* close (X) */}
       <button
