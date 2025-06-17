@@ -1,8 +1,8 @@
 // src/Kambaz/Courses/People/Table.tsx
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { Table, Spinner } from "react-bootstrap";
-import { FaUserCircle } from "react-icons/fa";
+import { useParams, Link }      from "react-router-dom";
+import { Table, Spinner }       from "react-bootstrap";
+import { FaUserCircle }         from "react-icons/fa";
 
 import * as courseClient from "../client";
 
@@ -14,14 +14,14 @@ export default function PeopleTable({ users: propUsers = EMPTY_USERS }: Props) {
   const { cid, uid } = useParams();
 
   /* local copy of the roster */
-  const [users, setUsers] = useState<any[]>(propUsers);
+  const [users, setUsers]   = useState<any[]>(propUsers);
   const [loading, setLoading] = useState<boolean>(propUsers.length === 0);
 
   /* resync when parent hands us a NEW array */
   useEffect(() => {
     setUsers(propUsers);
     setLoading(false);
-  }, [propUsers]);                     // ← depend on array identity
+  }, [propUsers]);
 
   /* fetch roster only if parent didn’t supply one */
   useEffect(() => {
@@ -29,7 +29,7 @@ export default function PeopleTable({ users: propUsers = EMPTY_USERS }: Props) {
     if (uid || propUsers.length || !cid) return;
     (async () => {
       setLoading(true);
-      try { setUsers(await courseClient.findUsersForCourse(cid)); }
+      try   { setUsers(await courseClient.findUsersForCourse(cid)); }
       finally { setLoading(false); }
     })();
   }, [cid, uid, propUsers.length]);
@@ -67,19 +67,17 @@ export default function PeopleTable({ users: propUsers = EMPTY_USERS }: Props) {
 
         <tbody>
           {users.map((u: any) => {
-            const path = cid
-              ? `/Kambaz/Courses/${cid}/People/${u._id}`
-              : `/Kambaz/Account/Users/${u._id}`;
+            const path =
+              cid
+                ? `/Kambaz/Courses/${cid}/People/${u._id}`
+                : `/Kambaz/Account/Users/${u._id}`;
+
             return (
               <tr key={u._id}>
                 <td className="text-nowrap">
                   <Link
-                    to={
-                      cid
-                        ? `/Kambaz/Courses/${cid}/People/${u._id}`
-                        : `/Kambaz/Account/Users/${u._id}`
-                    }
-                    replace={Boolean(uid)}              // ← key line: replace instead of push
+                    to={path}
+                    replace={Boolean(uid)}          // replace history if a drawer is already open
                     className="text-decoration-none text-dark"
                   >
                     <FaUserCircle className="me-2 text-secondary" />
