@@ -1,4 +1,4 @@
-import React from "react";
+// no React declared
 import {
   Routes,
   Route,

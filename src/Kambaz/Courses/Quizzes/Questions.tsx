@@ -5,7 +5,7 @@ import { useParams, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ListGroup, Button } from "react-bootstrap";
 import * as api from "./client";
-import { setQuestions, addQuestion, deleteQuestion } from "./reducer";
+import { setQuestions, addQuestion, /* deleteQuestion */ } from "./reducer";
 import { FaPlus, FaTrash, FaPencilAlt } from "react-icons/fa";
 
 export default function Questions(){
@@ -26,11 +26,11 @@ export default function Questions(){
     dispatch(addQuestion(q));
   };
 
-  const remove = async(id:string) => {
+  /* const remove = async(id:string) => {
     if(!window.confirm("Delete question?")) return;
     await api.deleteQuestion(id);
     dispatch(deleteQuestion(id));
-  };
+  }; */
 
   return (
     <div className="p-3">
@@ -53,7 +53,7 @@ export default function Questions(){
               </Link>
 
               {/* delete */}
-              <Button variant="outline-danger" size="sm" onClick={()=>remove(q._id)}>
+              <Button variant="outline-danger" size="sm" /* onClick={()=>remove(q._id)} */>
                 <FaTrash/>
               </Button>
             </ListGroup.Item>

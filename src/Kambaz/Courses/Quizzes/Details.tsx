@@ -8,7 +8,7 @@ import * as api from "./client";
 import { updateQuiz } from "./reducer";
 
 export default function QuizDetails(){
-  const { qid, cid }    = useParams();
+  const { qid }    = useParams();
   const { currentUser } = useSelector((s:any)=>s.accountReducer);
   const dispatch        = useDispatch();
   const [quiz,setQuiz]  = useState<any>(null);

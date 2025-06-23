@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// no react declared
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Form, Button, Card } from "react-bootstrap";
 
