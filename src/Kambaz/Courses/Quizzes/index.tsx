@@ -1,5 +1,5 @@
 // src/Kambaz/Courses/Quizzes/index.tsx
-import  { useEffect, useState, forwardRef } from "react";
+import { useEffect, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   ListGroup,
@@ -38,16 +38,12 @@ export default function Quizzes() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const quizzes: any[] = useSelector(
-    (s: any) => s.quizzesReducer.quizzes
-  );
-  const currentUser: any = useSelector(
-    (s: any) => s.accountReducer.currentUser
-  );
+  const quizzes: any[] = useSelector((s: any) => s.quizzesReducer.quizzes);
+  const currentUser: any = useSelector((s: any) => s.accountReducer.currentUser);
 
   const [search, setSearch] = useState("");
 
-  // ── Fetch & sort on course change ────────────────────────
+  // Fetch & sort when course changes
   useEffect(() => {
     (async () => {
       if (!cid) return;
@@ -61,7 +57,7 @@ export default function Quizzes() {
     })();
   }, [cid, dispatch]);
 
-  // ── Handlers ───────────────────────────────────────────
+  // Handlers
   const handleAdd = async () => {
     const q = await api.createQuiz(cid!, {});
     dispatch(addQuiz(q));
@@ -78,16 +74,30 @@ export default function Quizzes() {
     dispatch(updateQuiz(updated));
   };
 
-  // ── Filter & sort in-memory ────────────────────────────
+  // Filter & sort
   const filtered = quizzes
-    .filter((q) =>
-      q.title.toLowerCase().includes(search.toLowerCase())
-    )
+    .filter((q) => q.title.toLowerCase().includes(search.toLowerCase()))
     .sort(
       (a, b) =>
         new Date(a.availableDate || a.updatedAt || 0).getTime() -
         new Date(b.availableDate || b.updatedAt || 0).getTime()
     );
+
+  // Group by assignmentGroup
+  const groups: Record<string, any[]> = filtered.reduce((acc, q) => {
+    const key = q.assignmentGroup || "Quizzes";
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(q);
+    return acc;
+  }, {} as Record<string, any[]>);
+
+  // Group display names
+  const groupDisplay: Record<string, string> = {
+    Quizzes: "Assignment Quizzes",
+    Exams: "Exams",
+    Assignments: "Assignments",
+    Project: "Project",
+  };
 
   return (
     <div className="p-3">
@@ -117,139 +127,144 @@ export default function Quizzes() {
         </p>
       ) : (
         <div className="wd-lesson border rounded">
-          {/* Grey header */}
-          <div className="bg-secondary border-bottom p-3 fw-bold">
-            Quizzes
-          </div>
-
-          {/* List */}
           <ListGroup className="border-0 rounded-0">
-            {filtered.map((q: any) => {
-              const now = new Date();
-              const avail = q.availableDate
-                ? new Date(q.availableDate)
-                : null;
-              const until = q.untilDate
-                ? new Date(q.untilDate)
-                : null;
-
-              // split prefix/detail
-              let statusPrefix: string;
-              let statusDetail = "";
-              if (avail && avail > now) {
-                statusPrefix = "Not available until";
-                statusDetail = fmtDateTime(q.availableDate);
-              } else if (until && until < now) {
-                statusPrefix = "Closed";
-              } else {
-                statusPrefix = "Available";
-              }
-
+            {Object.entries(groups).map(([groupKey, qs]) => {
+              const header = groupDisplay[groupKey] || groupKey;
               return (
-                <ListGroup.Item
-                  key={q._id}
-                  className="wd-lesson d-flex align-items-center"
-                  style={{
-                    border: "none",
-                    borderBottom: "1px solid #e0e0e0",
-                    padding: "0.75rem 1rem",
-                    overflow: "visible",
-                  }}
-                >
-                  {/* Rocket icon */}
-                  <FaRocket
-                    style={{
-                      color: "#28a745",
-                      fontSize: "1.25rem",
-                      marginRight: "1rem",
-                    }}
-                  />
-
-                  {/* Title & meta */}
-                  <div className="flex-fill">
-                    <Link
-                      to={`${q._id}`}
-                      className="fw-bold text-dark text-decoration-none"
-                    >
-                      {q.title}
-                    </Link>
-                    <br />
-                    <small>
-                      <strong className="text-muted">
-                        {statusPrefix}
-                      </strong>
-                      {statusDetail && <> {statusDetail}</>}
-                      <span className="text-muted"> | </span>
-                      <strong className="text-muted">Due</strong>{" "}
-                      {fmtDateTime(q.dueDate)}
-                      <span className="text-muted"> | </span>
-                      {q.points} pts
-                      <span className="text-muted"> | </span>
-                      {q.questionsCount || 0} questions
-                    </small>
+                <div key={groupKey}>
+                  {/* Group header */}
+                  <div className="bg-secondary border-bottom p-3 fw-bold">
+                    {header}
                   </div>
+                  {qs.map((q: any) => {
+                    const now = new Date();
+                    const avail = q.availableDate
+                      ? new Date(q.availableDate)
+                      : null;
+                    const until = q.untilDate
+                      ? new Date(q.untilDate)
+                      : null;
 
-                  {currentUser?.role === "FACULTY" && (
-                    <>
-                      {/* Check only */}
-                      <span
-                        onClick={() => handleTogglePublish(q)}
+                    // Status prefix & detail
+                    let statusPrefix: string;
+                    let statusDetail = "";
+                    if (avail && avail > now) {
+                      statusPrefix = "Not available until";
+                      statusDetail = fmtDateTime(q.availableDate);
+                    } else if (until && until < now) {
+                      statusPrefix = "Closed";
+                    } else {
+                      statusPrefix = "Available";
+                    }
+
+                    return (
+                      <ListGroup.Item
+                        key={q._id}
+                        className="wd-lesson d-flex align-items-center"
                         style={{
-                          cursor: "pointer",
-                          fontSize: "1.25rem",
-                          marginRight: "1rem",
-                          color: "#28a745",
-                          opacity: q.published ? 1 : 0.3,
+                          border: "none",
+                          borderBottom: "1px solid #e0e0e0",
+                          padding: "0.75rem 1rem",
+                          overflow: "visible",
                         }}
                       >
-                        <FaCheckCircle />
-                      </span>
-
-                      {/* 3-dots */}
-                      <Dropdown align="end">
-                        <Dropdown.Toggle
-                          as={forwardRef<HTMLDivElement, any>(
-                            ({ onClick }, ref) => (
-                              <div
-                                ref={ref}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  onClick(e);
-                                }}
-                                style={{ cursor: "pointer" }}
-                              >
-                                <FaEllipsisV className="fs-5" />
-                              </div>
-                            )
-                          )}
-                          id={`quiz-menu-${q._id}`}
+                        {/* Icon */}
+                        <FaRocket
+                          style={{
+                            color: "#28a745",
+                            fontSize: "1.25rem",
+                            marginRight: "1rem",
+                          }}
                         />
-                        <Dropdown.Menu>
-                          <Dropdown.Item
-                            as={Link}
-                            to={`${q._id}/edit`}
+
+                        {/* Title & meta */}
+                        <div className="flex-fill">
+                          <Link
+                            to={`${q._id}`}
+                            className="fw-bold text-dark text-decoration-none"
                           >
-                            Edit
-                          </Dropdown.Item>
-                          <Dropdown.Item
-                            onClick={() => handleDelete(q._id)}
-                          >
-                            Delete
-                          </Dropdown.Item>
-                          <Dropdown.Item
-                            onClick={() =>
-                              handleTogglePublish(q)
-                            }
-                          >
-                            {q.published
-                              ? "Unpublish"
-                              : "Publish"}
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </>
-                  )}
-                </ListGroup.Item>
+                            {q.title}
+                          </Link>
+                          <br />
+                          <small>
+                            <strong className="text-muted">
+                              {statusPrefix}
+                            </strong>
+                            {statusDetail && <> {statusDetail}</>}
+                            <span className="text-muted"> | </span>
+                            <strong className="text-muted">Due</strong>{" "}
+                            {fmtDateTime(q.dueDate)}
+                            <span className="text-muted"> | </span>
+                            {q.points} pts
+                            <span className="text-muted"> | </span>
+                            {q.questionsCount || 0} Questions
+                          </small>
+                        </div>
+
+                        {currentUser?.role === "FACULTY" && (
+                          <>
+                            {/* Check icon */}
+                            <span
+                              onClick={() => handleTogglePublish(q)}
+                              style={{
+                                cursor: "pointer",
+                                fontSize: "1.25rem",
+                                marginRight: "1rem",
+                                color: "#28a745",
+                                opacity: q.published ? 1 : 0.3,
+                              }}
+                            >
+                              <FaCheckCircle />
+                            </span>
+
+                            {/* Dropdown */}
+                            <Dropdown align="end">
+                              <Dropdown.Toggle
+                                as={forwardRef<HTMLDivElement, any>(
+                                  ({ onClick }, ref) => (
+                                    <div
+                                      ref={ref}
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        onClick(e);
+                                      }}
+                                      style={{ cursor: "pointer" }}
+                                    >
+                                      <FaEllipsisV className="fs-5" />
+                                    </div>
+                                  )
+                                )}
+                                id={`quiz-menu-${q._id}`}
+                              />
+                              <Dropdown.Menu>
+                                <Dropdown.Item
+                                  as={Link}
+                                  to={`${q._id}/edit`}
+                                >
+                                  Edit
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  onClick={() => handleDelete(q._id)}
+                                >
+                                  Delete
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  onClick={() =>
+                                    handleTogglePublish(q)
+                                  }
+                                >
+                                  {q.published
+                                    ? "Unpublish"
+                                    : "Publish"}
+                                </Dropdown.Item>
+                              </Dropdown.Menu>
+                            </Dropdown>
+                          </>
+                        )}
+                      </ListGroup.Item>
+                    );
+                  })}
+                </div>
               );
             })}
           </ListGroup>
