@@ -35,3 +35,18 @@ body * {
 .wd-lesson {
   border-left: 3px solid green !important;
 }
+/* remove underline + give hover colour like a danger button */
+.btn-link.text-danger.no-underline {
+  text-decoration: none;                 /* no underline */
+}
+.btn-link.text-danger.no-underline:hover,
+.btn-link.text-danger.no-underline:focus {
+  text-decoration: none;                 /* still none on hover */
+  color: #A53E3E;                        /* same shade Bootstrap uses
+                                            for btn-danger:hover */
+}
+/* Lighter list borders, matching input boxes */
+.quiz-question-list .list-group,
+.quiz-question-list .list-group-item {
+  border-color: var(--bs-border-color) !important; /* #ced4da by default */
+}

@@ -1,69 +1,171 @@
-
-// src/Kambaz/Courses/Quizzes/Questions.tsx
+/* ──────────────────────────────────────────────────────────────
+   File: src/Kambaz/Courses/Quizzes/Questions.tsx
+──────────────────────────────────────────────────────────────── */
 import { useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { ListGroup, Button } from "react-bootstrap";
+import { Nav, ListGroup, Button, Spinner } from "react-bootstrap";
+import { FaPlus, FaPencilAlt, FaTrash } from "react-icons/fa";
+
 import * as api from "./client";
-import { setQuestions, addQuestion, /* deleteQuestion */ } from "./reducer";
-import { FaPlus, FaTrash, FaPencilAlt } from "react-icons/fa";
+import {
+  setQuestions,
+  addQuestion,
+  deleteQuestion,
+} from "./reducer";
 
-export default function Questions(){
-  const { qid, cid } = useParams();
-  const dispatch     = useDispatch();
-  const { questions } = useSelector((s:any)=>s.quizzesReducer);
+export default function QuizQuestions() {
+  /* ── routing / redux ─ */
+  const { cid, qid } = useParams<{ cid?: string; qid?: string }>();
+  const navigate      = useNavigate();
+  const dispatch      = useDispatch();
+  const { questions } = useSelector((s: any) => s.quizzesReducer);
 
-  useEffect(()=>{ (async()=>{ if(qid) dispatch(setQuestions(await api.listQuestions(qid))); })(); },[qid,dispatch]);
+  /* ── fetch ─ */
+  useEffect(() => {
+    (async () => {
+      if (!qid) return;
+      dispatch(setQuestions(await api.listQuestions(qid)));
+    })();
+  }, [qid, dispatch]);
 
-  const add = async() => {
-    const q = await api.createQuestion(qid!,{
-      title:"New Question", qType:"MCQ", points:1,
-      body:"Edit question…", mcqOptions:[
-        {_id:"o1",text:"Option 1",correct:true},
-        {_id:"o2",text:"Option 2",correct:false}
-      ]
+  /* ── helpers ─ */
+  const inactive = (tab: "DETAILS" | "QUESTIONS") =>
+    tab === "QUESTIONS" ? "" : "text-danger";
+
+  const addNew = async () => {
+    if (!qid) return;
+    const q = await api.createQuestion(qid, {
+      title: "New Question",
+      qType: "MCQ",
+      points: 1,
+      body: "",
+      mcqOptions: [
+        { _id: "opt1", text: "", correct: true },
+        { _id: "opt2", text: "", correct: false },
+      ],
     });
     dispatch(addQuestion(q));
+    navigate(
+      `/Kambaz/Courses/${cid}/Quizzes/${qid}/questions/${q._id}`
+    );
   };
 
-  /* const remove = async(id:string) => {
-    if(!window.confirm("Delete question?")) return;
-    await api.deleteQuestion(id);
+  const remove = async (id: string) => {
+    if (!qid) return;
+    if (!window.confirm("Delete question?")) return;
+    await api.deleteQuestion(qid, id);
     dispatch(deleteQuestion(id));
-  }; */
+  };
+
+  const totalPts = questions.reduce(
+    (sum: number, q: any) => sum + (q.points ?? 0),
+    0
+  );
+
+  /* ── UI ─ */
+  if (!qid) return <p className="m-3 text-danger">Bad Quiz ID</p>;
+  if (!questions) return <Spinner className="m-3" />;
 
   return (
     <div className="p-3">
-      <h4 className="d-flex justify-content-between">
-        Questions
-        <Button onClick={add}><FaPlus className="me-1"/>New Question</Button>
-      </h4>
+      {/* ── tab bar (same as editor) ─ */}
+      <Nav variant="tabs" activeKey="QUESTIONS" className="mb-3">
+        <Nav.Item>
+          <Nav.Link
+            eventKey="DETAILS"
+            as={Link as any}
+            to={`/Kambaz/Courses/${cid}/Quizzes/${qid}/edit`}
+            className={inactive("DETAILS")}
+          >
+            Details
+          </Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link
+            eventKey="QUESTIONS"
+            as={Link as any}
+            to={`/Kambaz/Courses/${cid}/Quizzes/${qid}/questions`}
+          >
+            Questions
+          </Nav.Link>
+        </Nav.Item>
+      </Nav>
 
-      {questions.length===0 ? <p className="text-muted">No questions yet.</p> :
+      {/* ── header row ─ */}
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h4 className="m-0">Points:&nbsp;{totalPts}</h4>
+        <Button variant="danger" onClick={addNew}>
+          <FaPlus className="me-1" />
+          New&nbsp;Question
+        </Button>
+      </div>
+
+      {/* list or empty state */}
+      {questions.length === 0 ? (
+        <p className="text-muted">
+          No questions yet – click <b>New Question</b> to start.
+        </p>
+      ) : (
+        <div className="quiz-question-list">
         <ListGroup>
-          {questions.map((q:any)=>(
-            <ListGroup.Item key={q._id} className="d-flex align-items-center">
+          {questions.map((q: any) => (
+            <ListGroup.Item
+              key={q._id}
+              className="d-flex align-items-center"
+              
+            >
               <div className="flex-fill">
-                <b>{q.title}</b> — {q.qType} • {q.points} pts
+                <b>{q.title || "(untitled)"}</b> — {q.qType} •{" "}
+                {q.points} pts
               </div>
 
-              {/* edit */}
-              <Link to={`${q._id}`} className="btn btn-outline-primary btn-sm me-2">
-                <FaPencilAlt/>
-              </Link>
+              <Button
+                as={Link as any}
+                to={`/Kambaz/Courses/${cid}/Quizzes/${qid}/questions/${q._id}`}
+                variant="outline-primary"
+                size="sm"
+                className="me-2"
+                title="Edit"
+              >
+                <FaPencilAlt />
+              </Button>
 
-              {/* delete */}
-              <Button variant="outline-danger" size="sm" /* onClick={()=>remove(q._id)} */>
-                <FaTrash/>
+              <Button
+                variant="outline-danger"
+                size="sm"
+                onClick={() => remove(q._id)}
+                title="Delete"
+              >
+                <FaTrash />
               </Button>
             </ListGroup.Item>
           ))}
         </ListGroup>
-      }
+        </div>
+      )}
 
-      <Link to={`/Kambaz/Courses/${cid}/Quizzes/${qid}/edit`} className="btn btn-secondary mt-3">
-        Back to Quiz
-      </Link>
+      {/* bottom controls */}
+      <hr className="mt-4" />
+      <div className="text-end">
+        <Button
+          variant="secondary"
+          className="me-2"
+          onClick={() =>
+            navigate(`/Kambaz/Courses/${cid}/Quizzes/${qid}/edit`)
+          }
+        >
+          Cancel
+        </Button>
+        <Button
+          variant="danger"
+          onClick={() =>
+            navigate(`/Kambaz/Courses/${cid}/Quizzes/${qid}`)
+          }
+        >
+          Save
+        </Button>
+      </div>
     </div>
   );
 }
