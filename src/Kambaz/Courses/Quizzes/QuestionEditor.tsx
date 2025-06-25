@@ -1,20 +1,21 @@
 /* ──────────────────────────────────────────────────────────────
-   File: src/Kambaz/Courses/Quizzes/QuestionEditor.tsx
+   Multi-blank FIB Editor — integer IDs (1…n, no gaps)
 ──────────────────────────────────────────────────────────────── */
 import { useEffect, useState } from "react";
+import {
+  Nav,
+  Form,
+  Button,
+  Spinner,
+  Alert,
+} from "react-bootstrap";
+import { v4 as uuidv4 } from "uuid";
 import {
   useParams,
   useNavigate,
   Link,
 } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Nav,
-  Form,
-  Button,
-  Spinner,
-} from "react-bootstrap";
-import { v4 as uuidv4 } from "uuid";
 
 import * as api from "./client";
 import { updateQuestion as storeUpdate } from "./reducer";
@@ -26,6 +27,10 @@ interface MCQOption {
   text: string;
   correct: boolean;
 }
+interface FIBBlank {
+  _id: string;          // "1", "2", …
+  answers: string[];
+}
 interface Question {
   _id: string;
   quizId: string;
@@ -35,8 +40,17 @@ interface Question {
   body: string;
   mcqOptions: MCQOption[];
   tfAnswer?: boolean;
-  fibAnswers?: string[];
+  fibBlanks?: FIBBlank[];
 }
+
+/* ── regex & helpers ─ */
+const BLANK_RE = /___([1-9][0-9]*)___/g;        // integers only
+const extractIds = (body: string): number[] => {
+  const s = new Set<number>();
+  let m;
+  while ((m = BLANK_RE.exec(body))) s.add(Number(m[1]));
+  return [...s].sort((a, b) => a - b);
+};
 
 export default function QuestionEditor() {
   const { cid, qid, qqid } = useParams<{
@@ -44,38 +58,37 @@ export default function QuestionEditor() {
     qid?: string;
     qqid?: string;
   }>();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
+  const navigate  = useNavigate();
+  const dispatch  = useDispatch();
   const storeQs: Question[] = useSelector(
     (s: any) => s.quizzesReducer.questions
   );
 
   const [question, setQuestion] = useState<Question | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading,  setLoading]  = useState(true);
+  const [fibError, setFibError] = useState<string | null>(null);
 
   /* ── fetch ─ */
   useEffect(() => {
     (async () => {
       if (!qid || !qqid) return;
-
       let q = storeQs.find((x) => x._id === qqid);
-      if (!q) {
-        const list = await api.listQuestions(qid);
-        q = list.find((x: Question) => x._id === qqid);
-      }
+      if (!q) q = (await api.listQuestions(qid)).find(
+        (x: Question) => x._id === qqid
+      );
+      if (q?.qType === "FIB" && !q.fibBlanks) q.fibBlanks = [];
       setQuestion(q ?? null);
       setLoading(false);
     })();
   }, [qid, qqid, storeQs]);
 
-  /* ── handlers ─ */
+  /* ── generic setter ─ */
   const handle = <K extends keyof Question>(
     k: K,
     v: Question[K]
   ) => setQuestion((p) => (p ? { ...p, [k]: v } : p));
 
-  /* MCQ helpers */
+  /* ── MCQ helpers (unchanged) ─ */
   const addMCQ = () =>
     handle("mcqOptions", [
       ...(question!.mcqOptions || []),
@@ -102,23 +115,81 @@ export default function QuestionEditor() {
       }))
     );
 
-  /* FIB helpers */
-  const addFIB = () =>
-    handle("fibAnswers", [...(question!.fibAnswers || []), ""]);
-  const updFIB = (i: number, v: string) => {
-    const arr = [...(question!.fibAnswers || [])];
-    arr[i] = v;
-    handle("fibAnswers", arr);
-  };
-  const delFIB = (i: number) => {
-    const arr = [...(question!.fibAnswers || [])];
-    arr.splice(i, 1);
-    handle("fibAnswers", arr);
+  /* ── FIB helpers ─ */
+  const syncFib = (body: string) => {
+    const ids = extractIds(body);            // unique, sorted numbers
+    /* validate continuity */
+    const continuous =
+      ids.every((id, idx) => id === idx + 1) || ids.length === 0;
+
+    if (!continuous) {
+      setFibError(
+        "Blanks must be numbered 1, 2, 3… with no gaps."
+      );
+      return;                                // do NOT mutate fibBlanks
+    }
+
+    setFibError(null);
+
+    /* build/update fibBlanks */
+    let blanks = [...(question!.fibBlanks || [])];
+
+    // add new IDs
+    ids.forEach((id) => {
+      const idStr = id.toString();
+      if (!blanks.find((b) => b._id === idStr))
+        blanks.push({ _id: idStr, answers: [""] });
+    });
+    // remove now-absent IDs
+    blanks = blanks.filter((b) =>
+      ids.includes(Number(b._id))
+    );
+    blanks.sort(
+      (a, b) => Number(a._id) - Number(b._id)
+    );
+    handle("fibBlanks", blanks);
   };
 
-  /* save / cancel */
+  const updAnswer = (bIdx: number, aIdx: number, val: string) => {
+  const newBlanks = question!.fibBlanks!.map((b, i) =>
+    i === bIdx
+      ? {
+          ...b,
+          answers: b.answers.map((a, j) =>
+            j === aIdx ? val : a
+          ),
+        }
+      : b
+  );
+  handle("fibBlanks", newBlanks);
+};
+
+const addAnswer = (bIdx: number) => {
+  const newBlanks = question!.fibBlanks!.map((b, i) =>
+    i === bIdx ? { ...b, answers: [...b.answers, ""] } : b
+  );
+  handle("fibBlanks", newBlanks);
+};
+
+const delAnswer = (bIdx: number, aIdx: number) => {
+  const newBlanks = question!.fibBlanks!.map((b, i) =>
+    i === bIdx
+      ? {
+          ...b,
+          answers:
+            b.answers.length === 1
+              ? [""]
+              : b.answers.filter((_, j) => j !== aIdx),
+        }
+      : b
+  );
+  handle("fibBlanks", newBlanks);
+};
+
+
+  /* ── save / cancel ─ */
   const save = async () => {
-    if (!qid || !question) return;
+    if (!qid || !question || fibError) return;
     const saved = await api.updateQuestion(qid, question);
     dispatch(storeUpdate(saved));
     navigate(
@@ -140,7 +211,7 @@ export default function QuestionEditor() {
     TF:
       "Enter your question text, then select if True or False is the correct answer.",
     FIB:
-      "Enter your question text including a ________, then define all possible correct answers for the blank. Students will see the question followed by a small text box to type their answer.",
+      "Use ___1___, ___2___ … in the question text. Numbers must start at 1 and have no gaps. For each blank, list accepted answers below.",
   };
 
   /* ── render ─ */
@@ -171,7 +242,7 @@ export default function QuestionEditor() {
         </Nav.Item>
       </Nav>
 
-      {/* top row: title | type | points */}
+      {/* top row */}
       <div className="d-flex gap-3 mb-2">
         <Form.Control
           placeholder="Title"
@@ -184,26 +255,14 @@ export default function QuestionEditor() {
           value={question.qType}
           onChange={(e) => {
             const v = e.target.value as QType;
-            if (v === "MCQ" && question.qType !== "MCQ") {
+            if (v !== "FIB") handle("fibBlanks", []);
+            if (v === "MCQ" && question.qType !== "MCQ")
               handle("mcqOptions", [
-                {
-                  _id: uuidv4(),
-                  text: "",
-                  correct: true,
-                },
-                {
-                  _id: uuidv4(),
-                  text: "",
-                  correct: false,
-                },
+                { _id: uuidv4(), text: "", correct: true },
+                { _id: uuidv4(), text: "", correct: false },
               ]);
-            }
-            if (v === "TF" && question.qType !== "TF") {
+            if (v === "TF" && question.qType !== "TF")
               handle("tfAnswer", true);
-            }
-            if (v === "FIB" && question.qType !== "FIB") {
-              handle("fibAnswers", [""]);
-            }
             handle("qType", v);
           }}
         >
@@ -227,10 +286,20 @@ export default function QuestionEditor() {
 
       <hr />
 
-      {/* instructions */}
       <p className="mb-4">{instructions[question.qType]}</p>
 
-      {/* question body */}
+      {fibError && (
+        <Alert
+          variant="warning"
+          onClose={() => setFibError(null)}
+          dismissible
+          className="py-2"
+        >
+          {fibError}
+        </Alert>
+      )}
+
+      {/* body */}
       <h6 className="fw-semibold">Question:</h6>
       <Form.Control
         as="textarea"
@@ -238,10 +307,14 @@ export default function QuestionEditor() {
         className="mb-4"
         placeholder="Question text…"
         value={question.body}
-        onChange={(e) => handle("body", e.target.value)}
+        onChange={(e) => {
+          const val = e.target.value;
+          handle("body", val);
+          if (question.qType === "FIB") syncFib(val);
+        }}
       />
 
-      {/* MCQ UI */}
+      {/* MCQ UI (unchanged) */}
       {question.qType === "MCQ" && (
         <>
           <h6 className="fw-semibold">Answers:</h6>
@@ -258,7 +331,7 @@ export default function QuestionEditor() {
                 onChange={() => setCorrect(o._id)}
               />
               <Form.Control
-                placeholder={`Option ${i + 1}`}
+                placeholder={`Possible Answer ${i + 1}`}
                 value={o.text}
                 onChange={(e) => updMCQ(o._id, e.target.value)}
               />
@@ -274,7 +347,7 @@ export default function QuestionEditor() {
           ))}
           <Button
             variant="link"
-            className="text-danger p-0 no-underline"
+            className="text-danger p-0"
             onClick={addMCQ}
           >
             + Add Another Answer
@@ -282,7 +355,7 @@ export default function QuestionEditor() {
         </>
       )}
 
-      {/* TF UI */}
+      {/* TF UI (unchanged) */}
       {question.qType === "TF" && (
         <>
           <h6 className="fw-semibold">Answers:</h6>
@@ -307,34 +380,49 @@ export default function QuestionEditor() {
       {/* FIB UI */}
       {question.qType === "FIB" && (
         <>
-          <h6 className="fw-semibold">Answers:</h6>
-          {(question.fibAnswers || []).map((ans, i) => (
-            <div
-              key={i}
-              className="d-flex align-items-center mb-2"
-            >
-              <Form.Control
-                placeholder="Possible Answer"
-                value={ans}
-                onChange={(e) => updFIB(i, e.target.value)}
-              />
+          {question.fibBlanks!.map((blank, bIdx) => (
+            <div key={blank._id} className="mb-4">
+              <h6 className="fw-semibold">
+                Blank {blank._id}:
+              </h6>
+              {blank.answers.map((ans, aIdx) => (
+                <div
+                  key={aIdx}
+                  className="d-flex align-items-center mb-2"
+                >
+                  <Form.Control
+                    placeholder="Possible Answer"
+                    value={ans}
+                    onChange={(e) =>
+                      updAnswer(bIdx, aIdx, e.target.value)
+                    }
+                  />
+                  <Button
+                    variant="outline-danger"
+                    size="sm"
+                    className="ms-2"
+                    onClick={() => delAnswer(bIdx, aIdx)}
+                  >
+                    &times;
+                  </Button>
+                </div>
+              ))}
               <Button
-                variant="outline-danger"
-                size="sm"
-                className="ms-2"
-                onClick={() => delFIB(i)}
+                variant="link"
+                className="text-danger p-0"
+                onClick={() => addAnswer(bIdx)}
               >
-                &times;
+                + Add Another Answer
               </Button>
             </div>
           ))}
-          <Button
-            variant="link"
-            className="text-danger p-0 no-underline"
-            onClick={addFIB}
-          >
-            + Add Another Answer
-          </Button>
+
+          {question.fibBlanks!.length === 0 && (
+            <p className="text-muted">
+              Add <code>___1___</code>, <code>___2___</code>, etc.
+              inside the question text to create blanks.
+            </p>
+          )}
         </>
       )}
 
@@ -348,7 +436,11 @@ export default function QuestionEditor() {
         >
           Cancel
         </Button>
-        <Button variant="danger" onClick={save}>
+        <Button
+          variant="danger"
+          disabled={!!fibError}
+          onClick={save}
+        >
           Update Question
         </Button>
       </div>
