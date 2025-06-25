@@ -18,7 +18,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import * as api from "./client";
-import { updateQuestion as storeUpdate } from "./reducer";
+import { updateQuiz as storeUpdateQuiz } from "./reducer"; 
 
 /* ── types ─ */
 type QType = "MCQ" | "TF" | "FIB";
@@ -188,14 +188,20 @@ const delAnswer = (bIdx: number, aIdx: number) => {
 
 
   /* ── save / cancel ─ */
-  const save = async () => {
-    if (!qid || !question || fibError) return;
-    const saved = await api.updateQuestion(qid, question);
-    dispatch(storeUpdate(saved));
-    navigate(
-      `/Kambaz/Courses/${cid}/Quizzes/${qid}/questions`
-    );
-  };
+ const save = async () => {
+  if (!qid || !question || fibError) return;
+
+  /* save question */
+  await api.updateQuestion(qid, question);
+
+  /* fetch updated quiz to get the new total points */
+  const updatedQuiz = await api.getQuiz(qid);
+  dispatch(storeUpdateQuiz(updatedQuiz));      // keeps list/details in sync
+
+  navigate(
+    `/Kambaz/Courses/${cid}/Quizzes/${qid}/questions`
+  );
+};
   const cancel = () =>
     navigate(
       `/Kambaz/Courses/${cid}/Quizzes/${qid}/questions`
