@@ -1,0 +1,20 @@
+/* ── Quizzes.css – styling for quizzes screens ─────────────── */
+
+/* wider, stylable blank underline for FIB questions */
+.fib-blank {
+  display: inline-block;
+  min-width: 6ch;           /* enough space for typical short words */
+  border-bottom: 2px solid currentColor;
+  text-align: center;
+  margin: 0 .25rem;
+}
+
+/* countdown timer – placed in header */
+.countdown {
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.countdown-warning {
+  color: #dc3545; /* Bootstrap danger color */
+}

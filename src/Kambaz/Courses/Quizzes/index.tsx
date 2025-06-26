@@ -39,7 +39,9 @@ export default function Quizzes() {
   const navigate = useNavigate();
 
   const quizzes: any[] = useSelector((s: any) => s.quizzesReducer.quizzes);
-  const currentUser: any = useSelector((s: any) => s.accountReducer.currentUser);
+  const currentUser: any = useSelector(
+    (s: any) => s.accountReducer.currentUser
+  );
 
   const [search, setSearch] = useState("");
 
@@ -74,9 +76,17 @@ export default function Quizzes() {
     dispatch(updateQuiz(updated));
   };
 
-  // Filter & sort
-  const filtered = quizzes
-    .filter((q) => q.title.toLowerCase().includes(search.toLowerCase()))
+  // Filter by role: students only see published quizzes
+  const visibleQuizzes =
+    currentUser?.role === "FACULTY"
+      ? quizzes
+      : quizzes.filter((q) => q.published);
+
+  // Filter & sort by search and date
+  const filtered = visibleQuizzes
+    .filter((q) =>
+      (q.title || "").toLowerCase().includes(search.toLowerCase())
+    )
     .sort(
       (a, b) =>
         new Date(a.availableDate || a.updatedAt || 0).getTime() -
@@ -117,13 +127,19 @@ export default function Quizzes() {
         )}
       </div>
 
-      {/* horizontal rule */}
-      <hr className="my-3" />
+      {/* horizontal rule with equal top/bottom spacing */}
+      <hr className="my-4" />
 
       {/* Empty state */}
       {filtered.length === 0 ? (
         <p className="text-muted">
-          No quizzes yet – click <b>+ Quiz</b> to create one.
+          No quizzes yet
+          {currentUser?.role === "STUDENT"
+            ? " (or nothing is published)"
+            : ""}
+          {currentUser?.role === "FACULTY" && " Click "}
+          {currentUser?.role === "FACULTY" && <b>+ Quiz</b>}
+          {currentUser?.role === "FACULTY" && " to create one."}
         </p>
       ) : (
         <div className="wd-lesson border rounded">
@@ -253,9 +269,7 @@ export default function Quizzes() {
                                     handleTogglePublish(q)
                                   }
                                 >
-                                  {q.published
-                                    ? "Unpublish"
-                                    : "Publish"}
+                                  {q.published ? "Unpublish" : "Publish"}
                                 </Dropdown.Item>
                               </Dropdown.Menu>
                             </Dropdown>

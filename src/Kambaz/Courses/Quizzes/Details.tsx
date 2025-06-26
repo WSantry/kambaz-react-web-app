@@ -1,6 +1,8 @@
-// src/Kambaz/Courses/Quizzes/Details.tsx
+/* ──────────────────────────────────────────────────────────────
+   File: src/Kambaz/Courses/Quizzes/Details.tsx  (UPDATED)
+──────────────────────────────────────────────────────────────── */
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button, Spinner, Table } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import * as api from "./client";
@@ -40,11 +42,10 @@ const fmtDateTime = (d?: string) => {
 
 /* ── component ────────────────────────────────────────── */
 export default function QuizDetails() {
-  const { qid } = useParams();
+  const { qid, cid } = useParams<{ qid?: string; cid?: string }>();
   const dispatch = useDispatch();
-  const { currentUser } = useSelector(
-    (s: any) => s.accountReducer
-  );
+  const navigate = useNavigate();
+  const { currentUser } = useSelector((s: any) => s.accountReducer);
   const [quiz, setQuiz] = useState<any>(null);
 
   /* fetch */
@@ -62,30 +63,58 @@ export default function QuizDetails() {
     dispatch(updateQuiz(updated));
   };
 
+  /* preview handler – block when 0 questions */
+  const handlePreview = () => {
+    if (!quiz) return;
+    if ((quiz.questionsCount ?? 0) === 0) {
+      window.alert(
+        "Preview is unavailable because this quiz has no questions."
+      );
+      return;
+    }
+    navigate("preview");
+  };
+
   if (!quiz) return <Spinner className="m-3" />;
 
-  /* rows – only required props */
-  const rows: [string, string | number][] = [
-    ["Quiz Type", QUIZ_TYPE[quiz.quizType]],
-    ["Points", quiz.points ?? 0],
-    ["Assignment Group", quiz.assignmentGroup],
-    ["Shuffle Answers", yesNo(quiz.shuffleAnswers)],
-    [
-      "Time Limit",
-      quiz.timeLimit ? `${quiz.timeLimit} Minutes` : "None",
-    ],
-    ["Multiple Attempts", yesNo(quiz.multipleAttempts)],
-    // ↙↙ ALWAYS show the value stored (or default 1)  ↙↙
-    ["How Many Attempts", quiz.maxAttempts ?? 1],
-    ["Show Correct Answers", SHOW_CORRECT[quiz.showCorrect]],
-    ["Access Code", quiz.accessCode || "—"],
-    ["One Question at a Time", yesNo(quiz.oneQPerTime)],
-    ["Webcam Required", yesNo(quiz.webcamRequired)],
-    [
-      "Lock Questions After Answering",
-      yesNo(quiz.lockAfterAnswer),
-    ],
-  ];
+  /* rows – vary by role & include Number of Questions */
+  let rows: [string, string | number][] = [];
+
+  if (currentUser?.role === "STUDENT") {
+    rows = [
+      ["Quiz Type", QUIZ_TYPE[quiz.quizType]],
+      ["Number of Questions", quiz.questionsCount ?? 0],
+      ["Points", quiz.points ?? 0],
+      [
+        "Time Limit",
+        quiz.timeLimit ? `${quiz.timeLimit} Minutes` : "None",
+      ],
+      ["Attempts Allowed", quiz.maxAttempts ?? 1],
+    ];
+  } else {
+    /* FACULTY (or default) */
+    rows = [
+      ["Quiz Type", QUIZ_TYPE[quiz.quizType]],
+      ["Number of Questions", quiz.questionsCount ?? 0],
+      ["Points", quiz.points ?? 0],
+      ["Assignment Group", quiz.assignmentGroup],
+      ["Shuffle Answers", yesNo(quiz.shuffleAnswers)],
+      [
+        "Time Limit",
+        quiz.timeLimit ? `${quiz.timeLimit} Minutes` : "None",
+      ],
+      ["Multiple Attempts", yesNo(quiz.multipleAttempts)],
+      ["How Many Attempts", quiz.maxAttempts ?? 1],
+      ["Show Correct Answers", SHOW_CORRECT[quiz.showCorrect]],
+      ["Access Code", quiz.accessCode || "—"],
+      ["One Question at a Time", yesNo(quiz.oneQPerTime)],
+      ["Webcam Required", yesNo(quiz.webcamRequired)],
+      [
+        "Lock Questions After Answering",
+        yesNo(quiz.lockAfterAnswer),
+      ],
+    ];
+  }
 
   /* ── render ─────────────────────────────────────────── */
   return (
@@ -94,24 +123,16 @@ export default function QuizDetails() {
       {currentUser?.role === "FACULTY" && (
         <div className="text-center mb-3">
           <Button
-            variant={quiz.published ? "warning" : "success"}
-            onClick={togglePublish}
+            variant="outline-success"
             className="me-2"
-          >
-            {quiz.published ? "Unpublish" : "Publish"}
-          </Button>
-          <Button
-            as={Link as any}
-            to="preview"
-            variant="outline-secondary"
-            className="me-2"
+            onClick={handlePreview}
           >
             Preview
           </Button>
           <Button
             as={Link as any}
             to="edit"
-            variant="outline-secondary"
+            variant="outline-primary"
           >
             Edit
           </Button>
@@ -119,10 +140,7 @@ export default function QuizDetails() {
       )}
 
       {/* dotted panel */}
-      <div
-        className="p-4 mb-3"
-        style={{ border: "1px dashed #c0c0c0" }}
-      >
+      <div className="p-4 mb-3" style={{ border: "1px dashed #c0c0c0" }}>
         <h4 className="fw-bold mb-4">{quiz.title}</h4>
 
         {/* property list – left aligned */}
@@ -141,57 +159,61 @@ export default function QuizDetails() {
         <Table borderless size="sm" className="mt-4 w-100">
           <thead>
             <tr>
-              {["Due", "For", "Available from", "Until"].map(
-                (label) => (
-                  <th
-                    key={label}
-                    className="fw-semibold"
-                    style={{
-                      borderBottom: "1px solid #adb5bd",
-                      paddingBottom: "0.25rem",
-                    }}
-                  >
-                    {label}
-                  </th>
-                )
-              )}
+              {["Due", "For", "Available from", "Until"].map((label) => (
+                <th
+                  key={label}
+                  className="fw-semibold"
+                  style={{
+                    borderBottom: "1px solid #adb5bd",
+                    paddingBottom: "0.25rem",
+                  }}
+                >
+                  {label}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td
-                style={{ borderBottom: "1px solid #adb5bd" }}
-              >
+              <td style={{ borderBottom: "1px solid #adb5bd" }}>
                 {fmtDateTime(quiz.dueDate)}
               </td>
-              <td
-                style={{ borderBottom: "1px solid #adb5bd" }}
-              >
-                Everyone
-              </td>
-              <td
-                style={{ borderBottom: "1px solid #adb5bd" }}
-              >
+              <td style={{ borderBottom: "1px solid #adb5bd" }}>Everyone</td>
+              <td style={{ borderBottom: "1px solid #adb5bd" }}>
                 {fmtDateTime(quiz.availableDate)}
               </td>
-              <td
-                style={{ borderBottom: "1px solid #adb5bd" }}
-              >
+              <td style={{ borderBottom: "1px solid #adb5bd" }}>
                 {fmtDateTime(quiz.untilDate)}
               </td>
             </tr>
           </tbody>
         </Table>
       </div>
-
-      {/* student CTA */}
-      {currentUser?.role === "STUDENT" && quiz.published && (
-        <div className="text-center">
-          <Button as={Link as any} to="take" variant="primary">
+      <hr className="mt-4" />
+      <div className="text-end">
+        <Button
+          variant="secondary"
+          className="me-2"
+          onClick={() => navigate(`/Kambaz/Courses/${cid}/Quizzes`)}
+        >
+          Close
+        </Button>
+        {currentUser?.role === "FACULTY" && (
+          <Button
+            variant={quiz.published ? "warning" : "success"}
+            onClick={togglePublish}
+            className="me-2"
+          >
+            {quiz.published ? "Unpublish" : "Publish"}
+          </Button>
+        )}
+        {/* student CTA */}
+        {currentUser?.role === "STUDENT" && quiz.published && (
+          <Button as={Link as any} to="take" variant="danger">
             Start Quiz
           </Button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

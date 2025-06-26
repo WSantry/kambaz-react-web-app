@@ -14,11 +14,17 @@ import {
 } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import * as api from "./client";
-import { addQuiz, updateQuiz } from "./reducer";
+import {
+  addQuiz,
+  updateQuiz,
+  setDraftQuiz,
+  updateDraftQuiz,
+  clearDraftQuiz,
+} from "./reducer";
 
 /* ── types ──────────────────────────────────────────────────── */
 type QuizForm = {
-  _id?: string;
+  _id: string;                             // ← NOW REQUIRED
   title: string;
   description: string;
   points: number;
@@ -42,9 +48,9 @@ type QuizForm = {
 const fmtLocal = (d: Date) => d.toISOString().slice(0, 16);
 const toLocal = (iso?: string) => {
   if (!iso) return "";
-  const d  = new Date(iso);                    // → UTC Date object
-  const ms = d.getTime() - d.getTimezoneOffset() * 60_000; // shift to local
-  return new Date(ms).toISOString().slice(0, 16);          // yyyy-MM-ddTHH:mm
+  const d = new Date(iso);
+  const ms = d.getTime() - d.getTimezoneOffset() * 60_000;
+  return new Date(ms).toISOString().slice(0, 16);
 };
 const toISO = (local: string) =>
   local ? new Date(local).toISOString() : "";
@@ -61,6 +67,7 @@ const defaultDates = () => {
 };
 
 const INITIAL_QUIZ: QuizForm = {
+  _id: "draft",                            // overwritten later
   title: "New Quiz",
   description: "",
   points: 0,
@@ -84,32 +91,41 @@ export default function QuizEditor() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [tab, setTab] = useState<"DETAILS" | "QUESTIONS">(
-    "DETAILS"
-  );
+  const [tab, setTab] = useState<"DETAILS" | "QUESTIONS">("DETAILS");
   const [quiz, setQuiz] = useState<QuizForm>(INITIAL_QUIZ);
   const [error, setError] = useState<string | null>(null);
 
-  /* fetch existing */
+  /* fetch existing (or initialise new) */
   useEffect(() => {
     (async () => {
       if (qid && qid !== "new") {
         const data = await api.getQuiz(qid);
-        setQuiz({
+        const fullQuiz: QuizForm = {
           ...INITIAL_QUIZ,
           ...data,
+          _id: data._id,                    // ensure required
           availableDate: toLocal(data.availableDate),
           dueDate: toLocal(data.dueDate),
           untilDate: toLocal(data.untilDate),
-        });
+        };
+        setQuiz(fullQuiz);
+        dispatch(setDraftQuiz(fullQuiz));   // ✅ no TS error now
+      } else {
+        dispatch(
+          setDraftQuiz({ ...INITIAL_QUIZ, _id: qid || "new" })
+        );
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qid]);
 
-  /* setter */
+  /* setter – keeps local UI & redux draft in sync */
   const handle = <K extends keyof QuizForm>(k: K, v: QuizForm[K]) =>
-    setQuiz((p) => ({ ...p, [k]: v }));
+    setQuiz((prev) => {
+      const updated = { ...prev, [k]: v };
+      dispatch(updateDraftQuiz({ [k]: v }));
+      return updated;
+    });
 
   /* date validation */
   const validateDates = () => {
@@ -154,6 +170,7 @@ export default function QuizEditor() {
       dispatch(updateQuiz(saved));
     }
 
+    dispatch(clearDraftQuiz());
     navigate(
       publish
         ? `/Kambaz/Courses/${cid}/Quizzes`
@@ -203,6 +220,7 @@ export default function QuizEditor() {
 
       {tab === "DETAILS" && (
         <>
+          {/* ───────────────────────────────────────── DETAILS FORM ─ */}
           <Form>
             {/* Title & description */}
             <Form.Group className="mb-3">
@@ -345,29 +363,32 @@ export default function QuizEditor() {
 
                 {/* Show correct answers (row) */}
                 <Form.Group className="mb-3">
-  <Form.Label>Show Correct Answers</Form.Label>
-  <Form.Select
-    style={{ maxWidth: 260 }}
-    value={quiz.showCorrect}
-    onChange={e =>
-      handle("showCorrect", e.target.value as typeof quiz.showCorrect)
-    }
-  >
-    <option value="IMMEDIATE">Immediately</option>
-    <option value="AFTER_DUE">After Due Date</option>
-    <option value="NEVER">Never</option>
-  </Form.Select>
-</Form.Group>
+                  <Form.Label>Show Correct Answers</Form.Label>
+                  <Form.Select
+                    style={{ maxWidth: 260 }}
+                    value={quiz.showCorrect}
+                    onChange={(e) =>
+                      handle(
+                        "showCorrect",
+                        e.target.value as typeof quiz.showCorrect
+                      )
+                    }
+                  >
+                    <option value="IMMEDIATE">Immediately</option>
+                    <option value="AFTER_DUE">After Due Date</option>
+                    <option value="NEVER">Never</option>
+                  </Form.Select>
+                </Form.Group>
 
                 {/* Access code (row) */}
                 <Form.Group className="mb-4">
-  <Form.Label>Access Code</Form.Label>
-  <Form.Control
-    style={{ maxWidth: 260 }}
-    value={quiz.accessCode}
-    onChange={e => handle("accessCode", e.target.value)}
-  />
-</Form.Group>
+                  <Form.Label>Access Code</Form.Label>
+                  <Form.Control
+                    style={{ maxWidth: 260 }}
+                    value={quiz.accessCode}
+                    onChange={(e) => handle("accessCode", e.target.value)}
+                  />
+                </Form.Group>
               </Col>
             </Row>
             {/* END OPTIONS */}
@@ -385,7 +406,7 @@ export default function QuizEditor() {
                       onChange={(e) => {
                         const v = e.target.value;
                         handle("dueDate", v);
-                        handle("untilDate", v); // sync
+                        handle("untilDate", v);
                       }}
                     />
                   </Col>
@@ -394,9 +415,7 @@ export default function QuizEditor() {
                     <Form.Control
                       type="datetime-local"
                       value={quiz.availableDate}
-                      onChange={(e) =>
-                        handle("availableDate", e.target.value)
-                      }
+                      onChange={(e) => handle("availableDate", e.target.value)}
                     />
                   </Col>
                   <Col md={4}>
@@ -411,7 +430,9 @@ export default function QuizEditor() {
               </Card.Body>
             </Card>
           </Form>
+          {/* ─────────────────────────────────────── END DETAILS FORM ─ */}
 
+          <hr className="mt-4" />
           {/* action buttons */}
           <div className="text-end">
             <Button

@@ -3,7 +3,7 @@ import "./Navigation.css";
 
 export default function CourseNavigation() {
   const location = useLocation();
-  const { cid } = useParams();
+  const { cid } = useParams<{ cid: string }>();
 
   const links = [
     "Home",
@@ -14,14 +14,17 @@ export default function CourseNavigation() {
     "Quizzes",
     "Grades",
     "People",
-    "Settings"
+    "Settings",
   ];
 
   return (
     <div id="wd-courses-navigation" className="list-group fs-5 rounded-0">
-      {links.map(label => {
+      {links.map((label) => {
         const url = `/Kambaz/Courses/${cid}/${label}`;
-        const active = location.pathname === url || location.pathname === url + "/";
+        // match exactly or any deeper sub-route
+        const active =
+          location.pathname === url ||
+          location.pathname.startsWith(`${url}/`);
 
         return (
           <Link
