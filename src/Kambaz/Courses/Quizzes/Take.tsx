@@ -1,4 +1,4 @@
-/* ──────────────────────────────────────────────────────────────
+/* ────────────────────────────────────────────────────────────── 
    Quiz runner – used by BOTH students (“take”) and faculty (“preview”)
 ──────────────────────────────────────────────────────────────── */
 import { useEffect, useState, useRef } from "react";
@@ -29,6 +29,16 @@ const renderBody = (body: string = "") =>
   marked.parse(
     body.replace(BLANK_RE, (_, id) => `<span class="fib-blank">${id}</span>`)
   );
+
+/* ★ NEW – simple Fisher-Yates shuffle */
+function shuffleArray<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 /* ── component ──────────────────────────────────────────────── */
 export default function TakeQuiz({ preview = false }: { preview?: boolean }) {
@@ -130,7 +140,19 @@ export default function TakeQuiz({ preview = false }: { preview?: boolean }) {
       if (!qid) return;
       const qz = await api.getQuiz(qid);
       setQuiz(qz);
-      setQuestions(await api.listQuestions(qid));
+
+      /* ★ UPDATED – fetch questions then optionally shuffle MCQ answers */
+      const qs = await api.listQuestions(qid);
+      if (qz?.shuffleAnswers) {
+        qs.forEach((qq: any) => {
+          if (qq.qType === "MCQ" && Array.isArray(qq.mcqOptions)) {
+            qq.mcqOptions = shuffleArray(qq.mcqOptions);
+          }
+        });
+      }
+      setQuestions(qs);
+      /* ★ END UPDATED */
+
       if (!preview && currentUser?.role === "STUDENT") {
         setAttempts(await api.listAttempts(qid));
       }
